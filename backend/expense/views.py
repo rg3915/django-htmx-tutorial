@@ -26,6 +26,13 @@ def expense_create(request):
     return render(request, 'expense/expense_result.html', context)
 
 
+@require_http_methods(['DELETE'])
+def expense_delete(request, pk):
+    obj = Expense.objects.get(pk=pk)
+    obj.delete()
+    return render(request, 'expense/expense_table.html')
+
+
 @require_http_methods(['POST'])
 def expense_paid(request):
     ids = request.POST.getlist('ids')
