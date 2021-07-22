@@ -1,0 +1,27 @@
+<!-- expense_result.html -->
+<tr
+  hx-target="this"
+  hx-swap="outerHTML"
+  class="person {% if object.paid %}activate{% else %}deactivate{% endif %}"
+>
+  <td>
+    <input
+      type="checkbox"
+      name="ids"
+      value="{{ object.pk }}"
+    >
+  </td>
+  <td>{{ object.description }}</td>
+  <td>{{ object.value }}</td>
+  <td class="text-center">
+    {% if object.paid %}
+    <span>
+      <i class="fa fa-check-circle ok"></i>
+    </span>
+    {% else %}
+    <span>
+      <i class="fa fa-times-circle no"></i>
+    </span>
+    {% endif %}
+  </td>
+</tr>

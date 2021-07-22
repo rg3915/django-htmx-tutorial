@@ -1,0 +1,66 @@
+<!-- expense_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Lista de Despesas</h1>
+<div class="row">
+  <div class="col">
+    <form
+      class="form-inline p-3"
+      hx-post="{% url 'expense:expense_create' %}"
+      hx-target="#expenseTbody"
+      hx-indicator=".htmx-indicator"
+      hx-swap="afterbegin"
+    >
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group p-2">
+        {{ field }}
+        {{ field.errors }}
+        {% if field.help_text %}
+        <small class="text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div class="form-group">
+        <button
+          type="submit"
+          class="btn btn-primary ml-2"
+        >Adicionar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  id="checkedExpenses"
+  class="col pt-2"
+>
+  <form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Descrição</th>
+          <th>Valor</th>
+          <th class="text-center">Pago</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTbody">
+        {% include "./expense_table.html" %}
+      </tbody>
+    </table>
+  </form>
+</div>
+
+{% include "includes/pagination.html" %}
+{% endblock content %}
+
+{% block js %}
+<script>
+document.body.addEventListener('htmx:configRequest', (event) => {
+  event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+</script>
+{% endblock js %}
