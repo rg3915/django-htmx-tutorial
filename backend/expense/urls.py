@@ -8,4 +8,6 @@ app_name = 'expense'
 urlpatterns = [
     path('', v.expense_list, name='expense_list'),
     path('create/', v.expense_create, name='expense_create'),
+    path('expense/paid/', v.expense_paid, name='expense_paid'),
+    path('expense/no-paid/', v.expense_no_paid, name='expense_no_paid'),
 ]

@@ -33,6 +33,22 @@
 </div>
 
 <div
+  class="col"
+  hx-include="#checkedExpenses"
+  hx-target="#expenseTbody"
+>
+  <a
+    class="btn btn-outline-success"
+    hx-post="{% url 'expense:expense_paid' %}"
+  >Pago</a>
+  <a
+    class="btn btn-outline-danger"
+    hx-post="{% url 'expense:expense_no_paid' %}"
+  >Não Pago</a>
+  <span class="lead"><strong>Bulk update</strong></span>
+</div>
+
+<div
   id="checkedExpenses"
   class="col pt-2"
 >

@@ -24,3 +24,31 @@ def expense_create(request):
 
     context = {'object': expense}
     return render(request, 'expense/expense_result.html', context)
+
+
+@require_http_methods(['POST'])
+def expense_paid(request):
+    ids = request.POST.getlist('ids')
+
+    # Edita as despesas selecionadas.
+    Expense.objects.filter(id__in=ids).update(paid=True)
+
+    # Retorna todas as despesas novamente.
+    expenses = Expense.objects.all()
+
+    context = {'object_list': expenses}
+    return render(request, 'expense/expense_table.html', context)
+
+
+@require_http_methods(['POST'])
+def expense_no_paid(request):
+    ids = request.POST.getlist('ids')
+
+    # Edita as despesas selecionadas.
+    Expense.objects.filter(id__in=ids).update(paid=False)
+
+    # Retorna todas as despesas novamente.
+    expenses = Expense.objects.all()
+
+    context = {'object_list': expenses}
+    return render(request, 'expense/expense_table.html', context)
