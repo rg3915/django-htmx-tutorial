@@ -29,3 +29,40 @@ python manage.py createsuperuser --username="admin" --email=""
 python manage.py runserver
 ```
 
+## Exemplos
+
+![expense_base.png](img/expense_base.png)
+
+---
+
+
+![a01_combobox.png](img/a01_combobox.png)
+
+---
+
+
+![a02_tabela.png](img/a02_tabela.png)
+
+---
+
+
+![01_expense_add.png](img/01_expense_add.png)
+
+---
+
+
+![02_expense_bulk_update.png](img/02_expense_bulk_update.png)
+
+---
+
+
+![03_expense_update.png](img/03_expense_update.png)
+
+---
+
+
+![04_expense_delete.png](img/04_expense_delete.png)
+
+---
+
+
