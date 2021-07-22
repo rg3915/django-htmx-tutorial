@@ -10,4 +10,6 @@ urlpatterns = [
     path('create/', v.expense_create, name='expense_create'),
     path('expense/paid/', v.expense_paid, name='expense_paid'),
     path('expense/no-paid/', v.expense_no_paid, name='expense_no_paid'),
+    path('<int:pk>/', v.expense_detail, name='expense_detail'),
+    path('<int:pk>/update/', v.expense_update, name='expense_update'),
 ]

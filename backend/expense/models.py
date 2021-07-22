@@ -4,7 +4,7 @@ from backend.core.models import TimeStampedModel
 
 
 class Expense(TimeStampedModel):
-    description = models.CharField('descrição', max_length=100)
+    description = models.CharField('descrição', max_length=30)
     value = models.DecimalField('valor', max_digits=7, decimal_places=2)
     paid = models.BooleanField('pago', default=False)
 

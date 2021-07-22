@@ -24,4 +24,9 @@
     </span>
     {% endif %}
   </td>
+  <td class="text-center">
+    <span hx-get="{% url 'expense:expense_detail' object.pk %}">
+      <i class="fa fa-pencil-square-o link span-is-link"></i>
+    </span>
+  </td>
 </tr>
