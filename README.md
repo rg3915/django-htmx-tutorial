@@ -6,7 +6,7 @@ Tutorial sobre como trabalhar com [Django](https://www.djangoproject.com/) e [ht
 ## Este projeto foi feito com:
 
 * [Python 3.9.6](https://www.python.org/)
-* [Django 3.2.5](https://www.djangoproject.com/)
+* [Django 3.2.*](https://www.djangoproject.com/)
 * [htmx](https://htmx.org/)
 
 ## Como rodar o projeto?
