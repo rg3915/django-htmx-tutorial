@@ -1,0 +1,15 @@
+<!-- index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Django + htmx</h1>
+
+<p>Veja no <a href="">Github</a>.</p>
+
+<p><a href="{% url 'state:state_list' %}">Estados</a> Filtro com dropdowns dependentes
+ e Filtrando várias tabelas com um clique</p>
+
+<p><a href="{% url 'expense:expense_list' %}">Despesas</a> CRUD com SPA</p>
+
+{% endblock content %}
