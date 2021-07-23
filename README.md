@@ -69,3 +69,5 @@ python manage.py runserver
 
 ### client-side-templates
 
+https://htmx.org/extensions/client-side-templates/
+
