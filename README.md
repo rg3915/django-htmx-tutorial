@@ -2,6 +2,7 @@
 
 Tutorial sobre como trabalhar com [Django](https://www.djangoproject.com/) e [htmx](https://htmx.org/).
 
+![htmx.png](img/htmx.png)
 
 ## Este projeto foi feito com:
 
