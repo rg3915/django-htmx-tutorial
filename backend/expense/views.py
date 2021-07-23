@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
@@ -79,3 +80,14 @@ def expense_update(request, pk):
             form.save()
 
     return render(request, 'expense/expense_result.html', context)
+
+
+def expense_json(self):
+    expenses = Expense.objects.all()
+    data = [expense.to_dict() for expense in expenses]
+    return JsonResponse({'data': data})
+
+
+def expense_client(request):
+    template_name = 'expense/expense_client.html'
+    return render(request, template_name)

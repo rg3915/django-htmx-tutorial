@@ -15,3 +15,11 @@ class Expense(TimeStampedModel):
 
     def __str__(self):
         return self.description
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'description': self.description,
+            'value': self.value,
+            'paid': self.paid,
+        }

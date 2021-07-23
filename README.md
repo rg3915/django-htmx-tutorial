@@ -67,3 +67,5 @@ python manage.py runserver
 ---
 
 
+### client-side-templates
+
