@@ -39,27 +39,27 @@ python manage.py runserver
 
 * [Filtrar com dropdowns dependentes](#filtrar-com-dropdowns-dependentes)
 
-<img src="img/a01_combobox.png" alt="" width="200px"
+<img src="img/a01_combobox.png" alt="" width="200px">
 
 
 * [Adicionar itens](#adicionar-itens)
 
-<img src="img/01_expense_add.png" alt="" width="200px"
+<img src="img/01_expense_add.png" alt="" width="200px">
 
 
 * [Pagar (editar) vários itens (Bulk Update)](#pagar-editar-vários-itens-bulk-update)
 
-<img src="img/02_expense_bulk_update.png" alt="" width="200px"
+<img src="img/02_expense_bulk_update.png" alt="" width="200px">
 
 
 * [Editar um item](#editar-um-item)
 
-<img src="img/03_expense_update.png" alt="" width="200px"
+<img src="img/03_expense_update.png" alt="" width="200px">
 
 
 * [Deletar um item](#deletar-um-item)
 
-<img src="img/04_expense_delete.png" alt="" width="200px"
+<img src="img/04_expense_delete.png" alt="" width="200px">
 
 
 * [client-side-templates](#client-side-templates)
