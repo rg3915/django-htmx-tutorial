@@ -32,6 +32,19 @@ python manage.py runserver
 
 ## Exemplos
 
+* [Filtrar várias tabelas com um clique](#filtrar-v%C3%A1rias-tabelas-com-um-clique)
+* [Filtrar com dropdowns dependentes](#filtrar-com-dropdowns-dependentes)
+* [Adicionar itens](#adicionar-itens)
+* [Pagar (editar) vários itens (Bulk Update)](#pagar-editar-vários-itens-bulk-update)
+* [Editar um item](#editar-um-item)
+* [Deletar um item](#deletar-um-item)
+* [client-side-templates](#client-side-templates)
+
+
+## Passo a passo
+
+## Exemplos
+
 ### Filtrar várias tabelas com um clique
 
 ![a02_tabela.png](img/a02_tabela.png)
