@@ -2,8 +2,8 @@
   "expenses": {
     "data": [
       { "description": "Lanche", "value": 20, "paid": true },
-      { "description": "Almoço", "value": 32, "paid": false },
-      { "description": "Refri", "value": 5.5, "paid": true }
+      { "description": "Conta de luz", "value": 80, "paid": false },
+      { "description": "Refrigerante", "value": 5.5, "paid": true }
     ]
   }
 }

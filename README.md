@@ -32,42 +32,78 @@ python manage.py runserver
 
 ## Exemplos
 
-![expense_base.png](img/expense_base.png)
-
----
-
-
-![a01_combobox.png](img/a01_combobox.png)
-
----
-
+### Filtrar várias tabelas com um clique
 
 ![a02_tabela.png](img/a02_tabela.png)
 
 ---
 
+### Filtrar com dropdowns dependentes
+
+![a01_combobox.png](img/a01_combobox.png)
+
+---
+
+### 
+
+![expense_base.png](img/expense_base.png)
+
+---
+
+### Adicionar itens
 
 ![01_expense_add.png](img/01_expense_add.png)
 
 ---
 
+### Pagar (editar) vários itens (Bulk Update)
 
 ![02_expense_bulk_update.png](img/02_expense_bulk_update.png)
 
 ---
 
+### Editar um item
 
 ![03_expense_update.png](img/03_expense_update.png)
 
 ---
 
+### Deletar um item
 
 ![04_expense_delete.png](img/04_expense_delete.png)
 
 ---
 
-
 ### client-side-templates
 
 https://htmx.org/extensions/client-side-templates/
+
+
+### Json Server
+
+#### Instalação
+
+```
+npm install -g json-server
+```
+
+Crie um `db.json`
+
+```
+{
+  "expenses": {
+    "data": [
+      { "description": "Lanche", "value": 20, "paid": true },
+      { "description": "Conta de luz", "value": 80, "paid": false },
+      { "description": "Refrigerante", "value": 5.5, "paid": true }
+    ]
+  }
+}
+```
+
+#### Server
+
+```
+json-server --watch db.json
+```
 
