@@ -33,12 +33,38 @@ python manage.py runserver
 ## Exemplos
 
 * [Filtrar várias tabelas com um clique](#filtrar-v%C3%A1rias-tabelas-com-um-clique)
+
+<img src="img/a02_tabela.png" alt="" width="200px">
+
+
 * [Filtrar com dropdowns dependentes](#filtrar-com-dropdowns-dependentes)
+
+![a01_combobox.png](img/a01_combobox.png)
+
+
 * [Adicionar itens](#adicionar-itens)
+
+![01_expense_add.png](img/01_expense_add.png)
+
+
 * [Pagar (editar) vários itens (Bulk Update)](#pagar-editar-vários-itens-bulk-update)
+
+![02_expense_bulk_update.png](img/02_expense_bulk_update.png)
+
+
 * [Editar um item](#editar-um-item)
+
+![03_expense_update.png](img/03_expense_update.png)
+
+
 * [Deletar um item](#deletar-um-item)
+
+![04_expense_delete.png](img/04_expense_delete.png)
+
+
 * [client-side-templates](#client-side-templates)
+
+
 
 
 ## Passo a passo
