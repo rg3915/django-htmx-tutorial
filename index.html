@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <link rel="shortcut icon" href="http://html5-training-in-hyderabad.blogspot.com.br/favicon.ico">
+  <link rel="shortcut icon" href="https://www.djangoproject.com/favicon.ico">
+  <title>htmx</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+  <!-- Font-awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+  <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+
+  <style>
+    .no {
+      color: red;
+    }
+    .ok {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Despesas (Client side)</h1>
+<h3>Consumindo API Rest</h3>
+
+<div hx-ext="client-side-templates">
+  <!-- http://localhost:8000/expense/json/ -->
+  <button
+    class="btn btn-primary"
+    hx-get="http://localhost:3000/expenses"
+    hx-swap="innerHTML"
+    hx-target="#content"
+    mustache-template="foo"
+  >
+    Clique para carregar os dados
+  </button>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th class="text-center">Pago</th>
+      </tr>
+    </thead>
+    <tbody id="content">
+    </tbody>
+    <template id="foo">
+      <!-- Mustache looping -->
+      {{ #data }}
+      <tr>
+        <td>{{ description }}</td>
+        <td>{{ value }}</td>
+        <td class="text-center">
+          <!-- Mustache conditional -->
+          <!-- http://mustache.github.io/mustache.5.html#Inverted-Sections -->
+          {{ #paid }} <i class="fa fa-check-circle ok"></i> {{ /paid }}
+          {{ ^paid }} <i class="fa fa-times-circle no"></i> {{ /paid }}
+        </td>
+      </tr>
+      {{ /data }}
+    </template>
+
+  </table>
+</div>
+</body>
+</html>
