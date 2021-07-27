@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .estados import estados
+from .states import states
 
 
 def state_list(request):
@@ -19,7 +19,7 @@ def state_list(request):
 
 
 def get_states(region):
-    return [estado for estado in estados.get(region).items()]
+    return [state for state in states.get(region).items()]
 
 
 def uf_list(request):

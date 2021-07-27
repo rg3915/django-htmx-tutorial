@@ -1,4 +1,4 @@
-estados = {
+states = {
     "Norte": {
         "AC": "Acre",
         "AM": "Amazonas",
