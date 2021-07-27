@@ -82,7 +82,7 @@ Em `nav.html` escreva
 
 ```html
 <li class="nav-item">
-  <a class="nav-link" href="{ url 'state:state_list' %}">Estados</a>
+  <a class="nav-link" href="{% url 'state:state_list' %}">Estados</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="{ url 'expense:expense_list' %}">Despesas</a>
@@ -276,14 +276,24 @@ Edite `state/uf_list.html`
 
 ```html
 <!-- state/uf_list.html -->
-
+{% for uf in ufs %}
+  <option value="{{ uf.0 }}">{{ uf.1 }}</option>
+{% endfor %}
 ```
 
 ---
 
-### 
+### A base para despesas
+
+Considere o desenho a seguir:
 
 ![expense_base.png](img/expense_base.png)
+
+`expense_result.html` será inserido em
+`expense_table.hmtl`, que por sua vez
+será inserido em `expense_list.html`.
+
+Sendo que `expense_result.html` será repetido várias vezes por causa do laço de repetição em `expense_table.hmtl`.
 
 ---
 
@@ -291,11 +301,299 @@ Edite `state/uf_list.html`
 
 ![01_expense_add.png](img/01_expense_add.png)
 
+Escreva o `expense/models.py`
+
+```python
+# expense/models.py
+from django.db import models
+
+from backend.core.models import TimeStampedModel
+
+
+class Expense(TimeStampedModel):
+    description = models.CharField('descrição', max_length=30)
+    value = models.DecimalField('valor', max_digits=7, decimal_places=2)
+    paid = models.BooleanField('pago', default=False)
+
+    class Meta:
+        ordering = ('description',)
+        verbose_name = 'despesa'
+        verbose_name_plural = 'despesas'
+
+    def __str__(self):
+        return self.description
+```
+
+Escreva o `expense/admin.py`
+
+```python
+# expense/admin.py
+from django.contrib import admin
+
+from .models import Expense
+
+
+@admin.register(Expense)
+class ExpenseAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'value', 'paid')
+    search_fields = ('description',)
+    list_filter = ('paid',)
+```
+
+Escreva o `expense/forms.py`
+
+```python
+# expense/forms.py
+from django import forms
+
+from .models import Expense
+
+
+class ExpenseForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = Expense
+        fields = ('description', 'value')
+        widgets = {
+            'description': forms.TextInput(attrs={'placeholder': 'Descrição', 'autofocus': True}),
+            'value': forms.NumberInput(attrs={'placeholder': 'Valor'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ExpenseForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+```
+
+Escreva o `expense/views.py`
+
+```python
+# expense/views.py
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
+
+from .forms import ExpenseForm
+from .models import Expense
+
+
+def expense_list(request):
+    template_name = 'expense/expense_list.html'
+    form = ExpenseForm(request.POST or None)
+
+    expenses = Expense.objects.all()
+
+    context = {'object_list': expenses, 'form': form}
+    return render(request, template_name, context)
+
+
+@require_http_methods(['POST'])
+def expense_create(request):
+    form = ExpenseForm(request.POST or None)
+
+    if form.is_valid():
+        expense = form.save()
+
+    context = {'object': expense}
+    return render(request, 'expense/expense_result.html', context)
+```
+
+Escreva o `expense/urls.py`
+
+```python
+# expense/urls.py
+from django.urls import path
+
+from backend.expense import views as v
+
+app_name = 'expense'
+
+
+urlpatterns = [
+    path('', v.expense_list, name='expense_list'),
+    path('create/', v.expense_create, name='expense_create'),
+]
+```
+
+Escreva o `expense/expense_list.html`
+
+```html
+<!-- expense/expense_list.html -->
+<!-- expense_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Lista de Despesas</h1>
+<div class="row">
+  <div class="col">
+    <form
+      class="form-inline p-3"
+      hx-post="{% url 'expense:expense_create' %}"
+      hx-target="#expenseTbody"
+      hx-indicator=".htmx-indicator"
+      hx-swap="afterbegin"
+    >
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group p-2">
+        {{ field }}
+        {{ field.errors }}
+        {% if field.help_text %}
+        <small class="text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div class="form-group">
+        <button
+          type="submit"
+          class="btn btn-primary ml-2"
+        >Adicionar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  id="checkedExpenses"
+  class="col pt-2"
+>
+  <form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Descrição</th>
+          <th>Valor</th>
+          <th class="text-center">Pago</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTbody">
+        {% include "./expense_table.html" %}
+      </tbody>
+    </table>
+  </form>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+document.body.addEventListener('htmx:configRequest', (event) => {
+  event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+</script>
+{% endblock js %}
+```
+
+Escreva o `expense/expense_table.html`
+
+```html
+<!-- expense_table.html -->
+{% for object in object_list %}
+  {% include "./expense_result.html" %}
+{% endfor %}
+```
+
+Escreva o `expense/expense_result.html`
+
+```html
+<!-- expense_result.html -->
+<tr
+  hx-target="this"
+  hx-swap="outerHTML"
+  class="person {% if object.paid %}activate{% else %}deactivate{% endif %}"
+>
+  <td>
+    <input
+      type="checkbox"
+      name="ids"
+      value="{{ object.pk }}"
+    >
+  </td>
+  <td>{{ object.description }}</td>
+  <td>{{ object.value }}</td>
+  <td class="text-center">
+    {% if object.paid %}
+    <span>
+      <i class="fa fa-check-circle ok"></i>
+    </span>
+    {% else %}
+    <span>
+      <i class="fa fa-times-circle no"></i>
+    </span>
+    {% endif %}
+  </td>
+</tr>
+```
+
+
 ---
 
 ### Pagar (editar) vários itens (Bulk Update)
 
 ![02_expense_bulk_update.png](img/02_expense_bulk_update.png)
+
+
+Escreva o `expense/views.py`
+
+```python
+@require_http_methods(['POST'])
+def expense_paid(request):
+    ids = request.POST.getlist('ids')
+
+    # Edita as despesas selecionadas.
+    Expense.objects.filter(id__in=ids).update(paid=True)
+
+    # Retorna todas as despesas novamente.
+    expenses = Expense.objects.all()
+
+    context = {'object_list': expenses}
+    return render(request, 'expense/expense_table.html', context)
+
+
+@require_http_methods(['POST'])
+def expense_no_paid(request):
+    ids = request.POST.getlist('ids')
+
+    # Edita as despesas selecionadas.
+    Expense.objects.filter(id__in=ids).update(paid=False)
+
+    # Retorna todas as despesas novamente.
+    expenses = Expense.objects.all()
+
+    context = {'object_list': expenses}
+    return render(request, 'expense/expense_table.html', context)
+```
+
+Escreva o `expense/urls.py`
+
+```python
+path('expense/paid/', v.expense_paid, name='expense_paid'),
+path('expense/no-paid/', v.expense_no_paid, name='expense_no_paid'),
+```
+
+Escreva o `expense/expense_list.html`
+
+```html
+<!-- expense_list.html -->
+<div
+  class="col"
+  hx-include="#checkedExpenses"
+  hx-target="#expenseTbody"
+>
+  <a
+    class="btn btn-outline-success"
+    hx-post="{% url 'expense:expense_paid' %}"
+  >Pago</a>
+  <a
+    class="btn btn-outline-danger"
+    hx-post="{% url 'expense:expense_no_paid' %}"
+  >Não Pago</a>
+  <span class="lead"><strong>Bulk update</strong></span>
+</div>
+```
 
 ---
 
@@ -303,17 +601,230 @@ Edite `state/uf_list.html`
 
 ![03_expense_update.png](img/03_expense_update.png)
 
+Escreva o `expense/views.py`
+
+```python
+# expense/views.py
+def expense_detail(request, pk):
+    template_name = 'expense/expense_detail.html'
+    obj = Expense.objects.get(pk=pk)
+    form = ExpenseForm(request.POST or None, instance=obj)
+
+    context = {'object': obj, 'form': form}
+    return render(request, template_name, context)
+
+
+def expense_update(request, pk):
+    template_name = 'expense/expense_result.html'
+    obj = Expense.objects.get(pk=pk)
+    form = ExpenseForm(request.POST or None, instance=obj)
+    context = {'object': obj}
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+
+    return render(request, template_name, context)
+```
+
+
+Escreva o `expense/urls.py`
+
+```python
+# expense/urls.py
+path('<int:pk>/', v.expense_detail, name='expense_detail'),
+path('<int:pk>/update/', v.expense_update, name='expense_update'),
+```
+
+Escreva o `expense/expense_result.html`
+
+```html
+<!-- expense/expense_result.html -->
+<td class="text-center">
+    <span hx-get="{% url 'expense:expense_detail' object.pk %}">
+      <i class="fa fa-pencil-square-o link span-is-link"></i>
+    </span>
+  </td>
+```
+
+
+Escreva o `expense/expense_detail.html`
+
+```html
+<!-- expense_detail.html -->
+<tr id="trExpense">
+  <td></td>
+  <td>{{ form.description }}</td>
+  <td>{{ form.value }}</td>
+  <td></td>
+  <td class="text-center">
+    <button
+      type="submit"
+      class="btn btn-success"
+      hx-post="{% url 'expense:expense_update' object.pk %}"
+      hx-target="#trExpense"
+      hx-swap="outerHTML"
+    >
+      OK
+    </button>
+    <button
+      class="btn btn-danger"
+      hx-get="{% url 'expense:expense_update' object.pk %}"
+      hx-target="#trExpense"
+      hx-swap="outerHTML"
+    >
+      <i class="fa fa-close"></i>
+    </button>
+  </td>
+</tr>
+```
+
 ---
 
 ### Deletar um item
 
 ![04_expense_delete.png](img/04_expense_delete.png)
 
+Escreva o `expense/views.py`
+
+```python
+# expense/views.py
+@require_http_methods(['DELETE'])
+def expense_delete(request, pk):
+    obj = Expense.objects.get(pk=pk)
+    obj.delete()
+    return render(request, 'expense/expense_table.html')
+```
+
+Escreva o `expense/urls.py`
+
+```python
+# expense/urls.py
+path('<int:pk>/delete/', v.expense_delete, name='expense_delete'),
+```
+
+Escreva o `expense/expense_result.html`
+
+```html
+<!-- expense/expense_result.html -->
+<td class="text-center">
+    ...
+    <span
+      hx-delete="{% url 'expense:expense_delete' object.pk %}"
+      hx-confirm="Deseja mesmo deletar?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:500ms"
+    >
+      <i class="fa fa-trash no span-is-link pl-2"></i>
+    </span>
+  </td>
+```
+
 ---
 
 ### client-side-templates
 
 https://htmx.org/extensions/client-side-templates/
+
+```python
+# expense/models.py
+
+class Expense(TimeStampedModel):
+    ...
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'description': self.description,
+            'value': self.value,
+            'paid': self.paid,
+        }
+```
+
+Escreva o `expense/views.py`
+
+```python
+# expense/views.py
+def expense_json(self):
+    expenses = Expense.objects.all()
+    data = [expense.to_dict() for expense in expenses]
+    return JsonResponse({'data': data})
+
+
+def expense_client(request):
+    template_name = 'expense/expense_client.html'
+    return render(request, template_name)
+```
+
+Escreva o `expense/urls.py`
+
+```python
+# expense/urls.py
+...
+path('json/', v.expense_json, name='expense_json'),
+path('client/', v.expense_client, name='expense_client'),
+```
+
+Escreva o `expense/expense_client.html`
+
+```html
+<!-- expense_client.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Lista de Despesas (Client side)</h1>
+<h3>Consumindo API Rest</h3>
+
+<div hx-ext="client-side-templates">
+  <button
+    class="btn btn-primary"
+    hx-get="{% url 'expense:expense_json' %}"
+    hx-swap="innerHTML"
+    hx-target="#content"
+    mustache-template="foo"
+  >
+    Clique para carregar os dados
+  </button>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th class="text-center">Pago</th>
+      </tr>
+    </thead>
+    <tbody id="content">
+    </tbody>
+    <template id="foo">
+      <!-- Mustache looping -->
+      { #data }
+      <tr>
+        <td>{ description }</td>
+        <td>{ value }</td>
+        <td class="text-center">
+          <!-- Mustache conditional -->
+          <!-- http://mustache.github.io/mustache.5.html#Inverted-Sections -->
+          { #paid } <i class="fa fa-check-circle ok"></i> { /paid }
+          { ^paid } <i class="fa fa-times-circle no"></i> { /paid }
+        </td>
+      </tr>
+      { /data }
+    </template>
+
+  </table>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+  // https://github.com/janl/mustache.js/#custom-delimiters
+  Mustache.tags = ['{', '}'];
+</script>
+{% endblock js %}
+```
+
+**Atenção:** tentar resolver o problema de [cors-headers](https://github.com/adamchainz/django-cors-headers).
 
 
 ### Json Server
