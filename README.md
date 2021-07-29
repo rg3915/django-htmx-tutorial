@@ -115,6 +115,11 @@ Em `nav.html` escreva
 </li>
 ```
 
+Corrija o link em `index.html`
+
+```html
+<a href="{% url 'state:state_list' %}">Estados</a>
+```
 
 
 ## Exemplos
@@ -301,13 +306,59 @@ def uf_list(request):
 
 Edite
 
-`touch state/uf_list.html`
+`touch state/templates/state/uf_list.html`
 
 ```html
 <!-- state/uf_list.html -->
 {% for uf in ufs %}
   <option value="{{ uf.0 }}">{{ uf.1 }}</option>
 {% endfor %}
+```
+
+Edite `state/templates/state/state_list.html`
+
+```html
+<h2 style="color: #3465a4;">Filtro com dropdowns dependentes</h2>
+
+<div class="row">
+
+  <div class="col">
+    <label>Região</label>
+    <select
+      name="region"
+      class="form-control"
+      hx-get="{% url 'state:uf_list' %}"
+      hx-target="#uf"
+    >
+      <option value="">-----</option>
+      {% for region in regions %}
+        <option value="{{ region.0 }}">{{ region.1 }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col">
+    <label>UF</label>
+    <select
+      id="uf"
+      class="form-control"
+    >
+      <option value="">-----</option>
+      <!-- O novo conteúdo será inserido aqui. -->
+    </select>
+  </div>
+
+</div>
+
+<hr>
+
+...
+```
+
+Descomente em `urls.py`
+
+```
+path('state/', include('backend.state.urls', namespace='state')),
 ```
 
 ---
