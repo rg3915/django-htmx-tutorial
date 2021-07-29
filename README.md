@@ -91,6 +91,12 @@ python manage.py createsuperuser --username="admin" --email=""
 python manage.py runserver
 ```
 
+Vamos editar:
+
+* base.html
+* nav.html
+* index.html
+
 
 Em `base.html` escreva
 
@@ -129,6 +135,15 @@ Corrija o link em `index.html`
 ![a02_tabela.png](img/a02_tabela.png)
 
 Considere a app `state`.
+
+
+Vamos editar:
+
+* views.py
+* urls.py
+* state_list.html
+* state_result.html
+
 
 Em `state/views.py` escreva
 
@@ -282,6 +297,14 @@ path('state/', include('backend.state.urls', namespace='state')),
 
 ![a01_combobox.png](img/a01_combobox.png)
 
+Vamos editar:
+
+* urls.py
+* views.py
+* uf_list.html
+* state_list.html
+
+
 Edite `state/urls.py`
 
 ```python
@@ -381,6 +404,20 @@ Sendo que `expense_result.html` será repetido várias vezes por causa do laço 
 ### Adicionar itens
 
 ![01_expense_add.png](img/01_expense_add.png)
+
+Vamos editar:
+
+* models.py
+* admin.py
+* forms.py
+* views.py
+* urls.py
+* expense_list.html
+* expense_table.html
+* expense_result.html
+* nav.html
+* index.html
+
 
 Escreva o `expense/models.py`
 
@@ -649,6 +686,12 @@ path('expense/', include('backend.expense.urls', namespace='expense')),
 
 ![02_expense_bulk_update.png](img/02_expense_bulk_update.png)
 
+Vamos editar:
+
+* views.py
+* urls.py
+* expense_list.html
+
 
 Escreva o `expense/views.py`
 
@@ -714,6 +757,14 @@ Escreva o `expense/expense_list.html`
 ### Editar um item
 
 ![03_expense_update.png](img/03_expense_update.png)
+
+Vamos editar:
+
+* views.py
+* urls.py
+* expense_result.html
+* expense_detail.html
+
 
 Escreva o `expense/views.py`
 
@@ -801,6 +852,13 @@ Escreva
 
 ![04_expense_delete.png](img/04_expense_delete.png)
 
+Vamos editar:
+
+* views.py
+* urls.py
+* expense_result.html
+
+
 Escreva o `expense/views.py`
 
 ```python
@@ -841,6 +899,9 @@ Escreva o `expense/expense_result.html`
 ### client-side-templates
 
 https://htmx.org/extensions/client-side-templates/
+
+Vamos editar:
+
 
 ```python
 # expense/models.py
