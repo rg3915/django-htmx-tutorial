@@ -269,6 +269,13 @@ Escreva o template
 {% endfor %}
 ```
 
+Descomente em `urls.py`
+
+```
+path('state/', include('backend.state.urls', namespace='state')),
+```
+
+
 ---
 
 ### Filtrar com dropdowns dependentes
@@ -355,12 +362,6 @@ Edite `state/templates/state/state_list.html`
 ...
 ```
 
-Descomente em `urls.py`
-
-```
-path('state/', include('backend.state.urls', namespace='state')),
-```
-
 ---
 
 ### A base para despesas
@@ -420,7 +421,9 @@ class ExpenseAdmin(admin.ModelAdmin):
     list_filter = ('paid',)
 ```
 
-Escreva o `expense/forms.py`
+Escreva 
+
+`touch expense/forms.py`
 
 ```python
 # expense/forms.py
@@ -496,10 +499,19 @@ urlpatterns = [
 ]
 ```
 
-Escreva o `expense/expense_list.html`
+Crie as pastas
+
+```
+mkdir -p expense/templates/expense
+```
+
+
+Escreva
+
+`touch expense/templates/expense/expense_list.html`
+
 
 ```html
-<!-- expense/expense_list.html -->
 <!-- expense_list.html -->
 {% extends "base.html" %}
 
@@ -567,7 +579,9 @@ document.body.addEventListener('htmx:configRequest', (event) => {
 {% endblock js %}
 ```
 
-Escreva o `expense/expense_table.html`
+Escreva
+
+`touch expense/templates/expense/expense_table.html`
 
 ```html
 <!-- expense_table.html -->
@@ -576,7 +590,9 @@ Escreva o `expense/expense_table.html`
 {% endfor %}
 ```
 
-Escreva o `expense/expense_result.html`
+Escreva
+
+`touch expense/templates/expense/expense_result.html`
 
 ```html
 <!-- expense_result.html -->
