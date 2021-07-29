@@ -174,7 +174,9 @@ mkdir -p state/templates/state
 ```
 
 
-Escreva o template `state/templates/state/state_list.html`
+Escreva o template
+
+`touch state/templates/state/state_list.html`
 
 ```html
 <!-- state/templates/state/state_list.html -->
@@ -249,7 +251,9 @@ def state_result(request):
     return render(request, template_name, context)
 ```
 
-Escreva o template `state/templates/state/state_result.html`
+Escreva o template
+
+`touch state/templates/state/state_result.html`
 
 ```html
 <!-- state/templates/state/state_result.html -->
@@ -295,7 +299,9 @@ def uf_list(request):
     return render(request, template_name, context)
 ```
 
-Edite `state/uf_list.html`
+Edite
+
+`touch state/uf_list.html`
 
 ```html
 <!-- state/uf_list.html -->
