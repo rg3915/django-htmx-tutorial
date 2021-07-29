@@ -624,6 +624,24 @@ Escreva
 </tr>
 ```
 
+Edite `nav.html`
+
+```html
+<a class="nav-link" href="{% url 'expense:expense_list' %}">Despesas</a>
+```
+
+Edite `index.html`
+
+```html
+<p><a href="{% url 'expense:expense_list' %}">Despesas</a> CRUD com SPA</p>
+```
+
+Descomente `urls.py`
+
+```python
+path('expense/', include('backend.expense.urls', namespace='expense')),
+```
+
 
 ---
 
@@ -744,7 +762,9 @@ Escreva o `expense/expense_result.html`
 ```
 
 
-Escreva o `expense/expense_detail.html`
+Escreva
+
+`touch expense/templates/expense/expense_detail.html`
 
 ```html
 <!-- expense_detail.html -->
@@ -860,7 +880,9 @@ path('json/', v.expense_json, name='expense_json'),
 path('client/', v.expense_client, name='expense_client'),
 ```
 
-Escreva o `expense/expense_client.html`
+Escreva
+
+`touch expense/templates/expense/expense_client.html`
 
 ```html
 <!-- expense_client.html -->
@@ -920,6 +942,12 @@ Escreva o `expense/expense_client.html`
 {% endblock js %}
 ```
 
+Edite `nav.html`
+
+```html
+<a class="nav-link" href="{% url 'expense:expense_client' %}">Despesas (Client side)</a>
+```
+
 **Atenção:** tentar resolver o problema de [cors-headers](https://github.com/adamchainz/django-cors-headers).
 
 
@@ -951,7 +979,11 @@ Crie um `db.json`
 json-server --watch db.json
 ```
 
-Escreva o `index.html`
+Na pasta principal, escreva
+
+`touch index.html`
+
+Mude o endpoint para `http://localhost:3000/expenses`
 
 ```html
 <!-- index.html -->
@@ -992,7 +1024,7 @@ Escreva o `index.html`
   <!-- http://localhost:8000/expense/json/ -->
   <button
     class="btn btn-primary"
-    hx-get="http://localhost:8000/expense/json/"
+    hx-get="http://localhost:3000/expenses"
     hx-swap="innerHTML"
     hx-target="#content"
     mustache-template="foo"
