@@ -75,12 +75,19 @@ python manage.py runserver
 git clone https://github.com/rg3915/django-htmx-tutorial.git
 cd django-htmx-tutorial
 git checkout passo-a-passo
+
 python -m venv .venv
 source .venv/bin/activate
+
+pip install -U pip
 pip install -r requirements.txt
+pip install ipdb
+
 python contrib/env_gen.py
+
 python manage.py migrate
 python manage.py createsuperuser --username="admin" --email=""
+
 python manage.py runserver
 ```
 
