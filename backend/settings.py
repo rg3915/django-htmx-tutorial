@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # my apps
     'backend.core',
+    'backend.bookstore',
     'backend.expense',
     'backend.state',
 ]

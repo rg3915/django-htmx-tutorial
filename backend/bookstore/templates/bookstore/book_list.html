@@ -1,0 +1,49 @@
+<!-- book_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <div class="row">
+    <div class="col-auto">
+      <h1>Lista de Livros</h1>
+    </div>
+    <div class="col-auto">
+      <a
+        href=""
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#addModal"
+        hx-get="{% url 'bookstore:book_create' %}"
+        hx-target="#addContent"
+        hx-swap="innerHTML"
+      >Adicionar</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="bookTbody">
+      {% include "./book_table.html" %}
+    </tbody>
+  </table>
+</div>
+
+{% include "./includes/detail_modal.html" %}
+{% include "./includes/add_modal.html" %}
+{% include "./includes/update_modal.html" %}
+
+{% endblock content %}
+
+{% block js %}
+<script>
+// Necessário por causa do delete
+document.body.addEventListener('htmx:configRequest', (event) => {
+  event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+</script>
+{% endblock js %}
