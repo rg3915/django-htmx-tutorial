@@ -111,6 +111,13 @@ python manage.py runserver
 
 ![04_expense_delete.png](img/04_expense_delete.png)
 
+
+---
+
+## Bookstore com modal
+
+Veja na app Bookstore como trabalhar Boostrap modal junto com o htmx.
+
 ---
 
 ### client-side-templates
