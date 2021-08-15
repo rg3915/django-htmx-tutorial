@@ -1137,6 +1137,21 @@ cd backend
 python ../manage.py startapp bookstore
 ```
 
+Vamos editar:
+
+* nav.html
+* settings.py
+* urls.py
+* bookstore/apps.py
+* bookstore/views.py
+* bookstore/models.py
+* bookstore/admin.py
+* bookstore/urls.py
+* bookstore/templates/bookstore/book_list.html
+* bookstore/templates/bookstore/book_table.html
+* bookstore/templates/bookstore/book_result.html
+
+
 Edite `nav.html`
 
 ```html
@@ -1314,6 +1329,15 @@ EOF
 
 ## Adicionar
 
+Vamos editar:
+
+* bookstore/views.py
+* bookstore/urls.py
+* bookstore/forms.py
+* bookstore/templates/bookstore/book_list.html
+* bookstore/templates/bookstore/includes/add_modal.html
+
+
 Edite `bookstore/views.py`
 
 
@@ -1419,6 +1443,15 @@ EOF
 
 ## Detalhes
 
+Vamos editar:
+
+* bookstore/views.py
+* bookstore/urls.py
+* bookstore/templates/bookstore/book_detail.html
+* bookstore/templates/bookstore/includes/detail_modal.html
+* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/book_list.html
+
 
 Edite `bookstore/views.py`
 
@@ -1515,6 +1548,17 @@ Edite `backend/bookstore/templates/bookstore/book_list.html`
 
 
 ## Editar
+
+Vamos editar:
+
+* bookstore/views.py
+* bookstore/urls.py
+* bookstore/templates/bookstore/book_list.html
+* bookstore/templates/bookstore/includes/update_modal.html
+* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/book_update_form.html
+
+
 
 Edite `bookstore/views.py`
 
@@ -1628,6 +1672,14 @@ EOF
 ```
 
 ## Deletar
+
+Vamos editar:
+
+* bookstore/views.py
+* bookstore/urls.py
+* bookstore/templates/bookstore/book_list.html
+* bookstore/templates/bookstore/book_result.html
+
 
 
 Edite `bookstore/views.py`
