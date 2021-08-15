@@ -64,6 +64,7 @@ python manage.py runserver
 
 * [client-side-templates](#client-side-templates)
 
+* [Bookstore](#bookstore)
 
 
 
@@ -1124,3 +1125,562 @@ Mude o endpoint para `http://localhost:3000/expenses`
 </body>
 </html>
 ```
+
+---
+
+## Bookstore
+
+Veremos um exemplo do uso de Bootstrap modal com htmx.
+
+```
+cd backend
+python ../manage.py startapp bookstore
+```
+
+Edite `nav.html`
+
+```html
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'bookstore:book_list' %}">Livros (Modal)</a>
+</li>
+```
+
+Edite `settings.py`
+
+```python
+INSTALLED_APPS = [
+    ...
+    'backend.bookstore',
+    ...
+]```
+
+
+Edite `urls.py`
+
+
+```python
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    ...
+    path('bookstore/', include('backend.bookstore.urls', namespace='bookstore')),
+    ...
+]
+```
+
+
+Edite `bookstore/apps.py`
+
+```python
+from django.apps import AppConfig
+
+
+class BookstoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'backend.bookstore'
+```
+
+Edite `bookstore/views.py`
+
+```python
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
+from django.views.generic import ListView
+
+# from .forms import BookForm
+from .models import Book
+
+
+class BookListView(ListView):
+    model = Book
+    paginate_by = 10
+```
+
+
+Edite `bookstore/models.py`
+
+```python
+from django.db import models
+from django.urls import reverse_lazy
+
+
+class Book(models.Model):
+    title = models.CharField('título', max_length=100, unique=True)
+    author = models.CharField('autor', max_length=100, null=True, blank=True)
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'livro'
+        verbose_name_plural = 'livros'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse_lazy('bookstore:book_detail', kwargs={'pk': self.pk})
+```
+
+
+Edite `bookstore/admin.py`
+
+```python
+from django.contrib import admin
+
+from .models import Book
+
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author')
+    search_fields = ('title', 'author')
+```
+
+
+Edite `bookstore/urls.py`
+
+```python
+from django.urls import path
+
+from backend.bookstore import views as v
+
+app_name = 'bookstore'
+
+
+urlpatterns = [
+    path('', v.BookListView.as_view(), name='book_list'),
+]
+```
+
+
+```
+mkdir -p backend/bookstore/templates/bookstore/includes
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/book_list.html
+<!-- book_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <div class="row">
+    <div class="col-auto">
+      <h1>Lista de Livros</h1>
+    </div>
+    <div class="col-auto">
+      <a href="" class="btn btn-primary">Adicionar</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="bookTbody">
+      {% include "./book_table.html" %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
+EOF
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/book_table.html
+<!-- book_table.html -->
+{% for object in object_list %}
+  {% include "./book_result.html" %}
+{% endfor %}
+EOF
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/book_result.html
+<!-- book_result.html -->
+<tr id="trBook{{ object.pk }}">
+  <td>
+    <a href="">{{ object.title }}</a>
+  </td>
+  <td>{{ object.author|default:'---' }}</td>
+  <td></td>
+</tr>
+EOF
+```
+
+## Adicionar
+
+Edite `bookstore/views.py`
+
+
+```python
+...
+from .forms import BookForm
+from .models import Book
+
+
+def book_create(request):
+    template_name = 'bookstore/book_form.html'
+    form = BookForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            book = form.save()
+            template_name = 'bookstore/book_result.html'
+            context = {'object': book}
+            return render(request, template_name, context)
+
+    context = {'form': form}
+    return render(request, template_name, context)
+
+```
+
+
+Edite `bookstore/urls.py`
+
+```python
+...
+path('create/', v.book_create, name='book_create'),
+...
+```
+
+```python
+cat << EOF > backend/bookstore/forms.py
+from django import forms
+
+from .models import Book
+
+
+class BookForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(BookForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+EOF
+```
+
+Edite `backend/bookstore/templates/bookstore/book_list.html`
+
+```html
+<!-- book_list.html -->
+
+      <a
+        href=""
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#addModal"
+        hx-get="{% url 'bookstore:book_create' %}"
+        hx-target="#addContent"
+        hx-swap="innerHTML"
+      >Adicionar</a>
+      ...
+
+{% include "./includes/add_modal.html" %}
+
+{% endblock content %}
+
+```
+
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/includes/add_modal.html
+<!-- addModal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+  <div class="modal-dialog" role="document">
+    <div id="addContent" class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="detailModalLabel">Modal title</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+EOF
+
+```
+
+
+## Detalhes
+
+
+Edite `bookstore/views.py`
+
+```python
+def book_detail(request, pk):
+    template_name = 'bookstore/book_detail.html'
+    obj = Book.objects.get(pk=pk)
+    context = {'object': obj}
+    return render(request, template_name, context)
+```
+
+Edite `bookstore/urls.py`
+
+```python
+...
+path('<int:pk>/', v.book_detail, name='book_detail'),
+...
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/book_detail.html
+<div class="modal-header">
+  <h4 class="modal-title" id="detailModalLabel">{{ object.title }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+  <p>Título
+    <span class="float-right">{{ object.title }}</span>
+  </p>
+  <p>Autor
+    <span class="float-right">{{ object.author|default:'---' }}</span>
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+</div>
+EOF
+```
+
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/includes/detail_modal.html
+<!-- detailModal -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+  <div class="modal-dialog" role="document">
+    <div id="detailContent" class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="detailModalLabel">Modal title</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+EOF
+```
+
+
+
+Edite `backend/bookstore/templates/bookstore/book_result.html`
+
+```html
+<!-- book_result.html -->
+<tr id="trBook{{ object.pk }}">
+  <td>
+    <a
+      href=""
+      data-toggle="modal"
+      data-target="#detailModal"
+      hx-get="{{ object.get_absolute_url }}"
+      hx-target="#detailContent"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+    >{{ object.title }}</a>
+  </td>
+  <td>{{ object.author|default:'---' }}</td>
+  <td></td>
+</tr>
+```
+
+Edite `backend/bookstore/templates/bookstore/book_list.html`
+
+```html
+...
+{% include "./includes/detail_modal.html" %}
+...
+```
+
+
+## Editar
+
+Edite `bookstore/views.py`
+
+```python
+def book_update(request, pk):
+    template_name = 'bookstore/book_update_form.html'
+    instance = Book.objects.get(pk=pk)
+    form = BookForm(request.POST or None, instance=instance)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            book = form.save()
+            template_name = 'bookstore/book_result.html'
+            context = {'object': book}
+            return render(request, template_name, context)
+
+    context = {'form': form, 'object': instance}
+    return render(request, template_name, context)
+
+```
+
+Edite `bookstore/urls.py`
+
+```python
+...
+path('<int:pk>/update/', v.book_update, name='book_update'),
+...
+```
+
+
+Edite `backend/bookstore/templates/bookstore/book_list.html`
+
+```html
+{% include "./includes/update_modal.html" %}
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/includes/update_modal.html
+<!-- updateModal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+  <div class="modal-dialog" role="document">
+    <div id="updateContent" class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="updateModalLabel">Modal title</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+EOF
+```
+
+Editar `backend/bookstore/templates/bookstore/book_result.html`
+
+```html
+<span
+  data-toggle="modal"
+  data-target="#updateModal"
+  hx-get="{% url 'bookstore:book_update' object.pk %}"
+  hx-target="#updateContent"
+  hx-swap="innerHTML"
+>
+  <i class="fa fa-edit link span-is-link"></i>
+</span>
+```
+
+```html
+cat << EOF > backend/bookstore/templates/bookstore/book_update_form.html
+<div class="modal-header">
+  <h4 class="modal-title" id="updateModalLabel">Editar {{ object }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+<form
+  hx-post="{% url 'bookstore:book_update' object.pk %}"
+  hx-target="#trBook{{ object.pk }}"
+  hx-indicator=".htmx-indicator"
+  hx-swap="outerHTML"
+>
+  <div class="modal-body">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group p-2">
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+        {% if field.help_text %}
+          <small class="text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function() {
+    $('#updateModal').modal('toggle')
+  });
+</script>
+EOF
+```
+
+## Deletar
+
+
+Edite `bookstore/views.py`
+
+```python
+@require_http_methods(['DELETE'])
+def book_delete(request, pk):
+    template_name = 'bookstore/book_table.html'
+    obj = Book.objects.get(pk=pk)
+    obj.delete()
+    return render(request, template_name)
+
+```
+
+
+Edite `bookstore/urls.py`
+
+```python
+...
+path('<int:pk>/delete/', v.book_delete, name='book_delete'),
+...
+```
+
+
+Editar `backend/bookstore/templates/bookstore/book_list.html`
+
+```html
+
+{% block js %}
+<script>
+// Necessário por causa do delete
+document.body.addEventListener('htmx:configRequest', (event) => {
+  event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+</script>
+{% endblock js %}
+
+```
+
+
+Editar `backend/bookstore/templates/bookstore/book_result.html`
+
+Ao lado icone de editar.
+
+```html
+...
+<span
+      hx-delete="{% url 'bookstore:book_delete' object.pk %}"
+      hx-confirm="Deseja mesmo deletar?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:500ms"
+    >
+      <i class="fa fa-trash no span-is-link pl-2"></i>
+    </span>
+...
+```
+
