@@ -1422,6 +1422,7 @@ cat << EOF > backend/bookstore/templates/bookstore/includes/add_modal.html
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
   <div class="modal-dialog" role="document">
     <div id="addContent" class="modal-content">
+      <!-- O novo conteúdo será inserido aqui. -->
       <div class="modal-header">
         <h4 class="modal-title" id="detailModalLabel">Modal title</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -1498,6 +1499,7 @@ cat << EOF > backend/bookstore/templates/bookstore/includes/detail_modal.html
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
   <div class="modal-dialog" role="document">
     <div id="detailContent" class="modal-content">
+      <!-- O novo conteúdo será inserido aqui. -->
       <div class="modal-header">
         <h4 class="modal-title" id="detailModalLabel">Modal title</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -1601,6 +1603,7 @@ cat << EOF > backend/bookstore/templates/bookstore/includes/update_modal.html
 <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
   <div class="modal-dialog" role="document">
     <div id="updateContent" class="modal-content">
+      <!-- O novo conteúdo será inserido aqui. -->
       <div class="modal-header">
         <h4 class="modal-title" id="updateModalLabel">Modal title</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
