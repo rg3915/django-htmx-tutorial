@@ -64,7 +64,7 @@ python manage.py runserver
 
 * [client-side-templates](#client-side-templates)
 
-* [Bookstore](#bookstore)
+* [Bookstore (modal)](#bookstore)
 
 
 
@@ -1152,7 +1152,8 @@ INSTALLED_APPS = [
     ...
     'backend.bookstore',
     ...
-]```
+]
+```
 
 
 Edite `urls.py`
@@ -1373,16 +1374,16 @@ Edite `backend/bookstore/templates/bookstore/book_list.html`
 ```html
 <!-- book_list.html -->
 
-      <a
-        href=""
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#addModal"
-        hx-get="{% url 'bookstore:book_create' %}"
-        hx-target="#addContent"
-        hx-swap="innerHTML"
-      >Adicionar</a>
-      ...
+<a
+  href=""
+  class="btn btn-primary"
+  data-toggle="modal"
+  data-target="#addModal"
+  hx-get="{% url 'bookstore:book_create' %}"
+  hx-target="#addContent"
+  hx-swap="innerHTML"
+>Adicionar</a>
+...
 
 {% include "./includes/add_modal.html" %}
 
@@ -1674,13 +1675,13 @@ Ao lado icone de editar.
 ```html
 ...
 <span
-      hx-delete="{% url 'bookstore:book_delete' object.pk %}"
-      hx-confirm="Deseja mesmo deletar?"
-      hx-target="closest tr"
-      hx-swap="outerHTML swap:500ms"
-    >
-      <i class="fa fa-trash no span-is-link pl-2"></i>
-    </span>
+  hx-delete="{% url 'bookstore:book_delete' object.pk %}"
+  hx-confirm="Deseja mesmo deletar?"
+  hx-target="closest tr"
+  hx-swap="outerHTML swap:500ms"
+>
+  <i class="fa fa-trash no span-is-link pl-2"></i>
+</span>
 ...
 ```
 
