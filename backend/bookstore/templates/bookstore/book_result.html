@@ -1,6 +1,31 @@
 <!-- book_result.html -->
 <tr id="trBook{{ object.pk }}">
   <td>
+    <span
+      hx-post="{% url 'bookstore:book_like' object.pk %}"
+      hx-target="#trBook{{ object.pk }}"
+      hx-swap="outerHTML"
+    >
+      {% if object.like %}
+        <i class="fa fa-thumbs-up text-primary"></i>
+      {% else %}
+        <i class="fa fa-thumbs-o-up text-secondary"></i>
+      {% endif %}
+    </span>
+    <span
+      class="ml-2"
+      hx-post="{% url 'bookstore:book_unlike' object.pk %}"
+      hx-target="#trBook{{ object.pk }}"
+      hx-swap="outerHTML"
+    >
+      {% if not object.like %}
+        <i class="fa fa-thumbs-down text-danger"></i>
+      {% else %}
+        <i class="fa fa-thumbs-o-down text-secondary"></i>
+      {% endif %}
+    </span>
+  </td>
+  <td>
     <a
       href=""
       data-toggle="modal"

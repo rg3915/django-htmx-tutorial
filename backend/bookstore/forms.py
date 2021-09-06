@@ -8,7 +8,7 @@ class BookForm(forms.ModelForm):
 
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ('title', 'author')
 
     def __init__(self, *args, **kwargs):
         super(BookForm, self).__init__(*args, **kwargs)

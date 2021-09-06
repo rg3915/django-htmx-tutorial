@@ -55,3 +55,23 @@ def book_delete(request, pk):
     obj = Book.objects.get(pk=pk)
     obj.delete()
     return render(request, template_name)
+
+
+@require_http_methods(['POST'])
+def book_like(request, pk):
+    template_name = 'bookstore/book_result.html'
+    book = Book.objects.get(pk=pk)
+    book.like = True
+    book.save()
+    context = {'object': book}
+    return render(request, template_name, context)
+
+
+@require_http_methods(['POST'])
+def book_unlike(request, pk):
+    template_name = 'bookstore/book_result.html'
+    book = Book.objects.get(pk=pk)
+    book.like = False
+    book.save()
+    context = {'object': book}
+    return render(request, template_name, context)
