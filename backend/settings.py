@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_extensions',
     # my apps
     'backend.core',
+    'backend.bookstore',
     'backend.expense',
     'backend.state',
 ]
