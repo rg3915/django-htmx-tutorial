@@ -1740,3 +1740,112 @@ Ao lado icone de editar.
 ...
 ```
 
+## Like e Unlike
+
+Vamos editar:
+
+* bookstore/models.py
+* bookstore/admin.py
+* bookstore/forms.py
+* bookstore/book_list.html
+* bookstore/book_result.html
+* bookstore/urls.py
+* bookstore/views.py
+
+Edite `models.py`
+
+```python
+...
+like = models.BooleanField(null=True)
+```
+
+
+Edite `admin.py`
+
+```python
+...
+list_display = ('title', 'author', 'like')
+...
+```
+
+
+Edite `forms.py`
+
+```python
+...
+fields = ('title', 'author')
+...
+```
+
+
+Edite `book_list.html`
+
+```html
+<th>Gostou?</th>
+```
+
+
+Edite `book_result.html`
+
+```html
+<td>
+  <span
+    hx-post="{% url 'bookstore:book_like' object.pk %}"
+    hx-target="#trBook{{ object.pk }}"
+    hx-swap="outerHTML"
+  >
+    {% if object.like %}
+      <i class="fa fa-thumbs-up text-primary"></i>
+    {% else %}
+      <i class="fa fa-thumbs-o-up text-secondary"></i>
+    {% endif %}
+  </span>
+  <span
+    class="ml-2"
+    hx-post="{% url 'bookstore:book_unlike' object.pk %}"
+    hx-target="#trBook{{ object.pk }}"
+    hx-swap="outerHTML"
+  >
+    {% if not object.like %}
+      <i class="fa fa-thumbs-down text-danger"></i>
+    {% else %}
+      <i class="fa fa-thumbs-o-down text-secondary"></i>
+    {% endif %}
+  </span>
+</td>
+```
+
+
+Edite `urls.py`
+
+```python
+...
+path('<int:pk>/like/', v.book_like, name='book_like'),
+path('<int:pk>/unlike/', v.book_unlike, name='book_unlike'),
+```
+
+
+Edite `views.py`
+
+```python
+@require_http_methods(['POST'])
+def book_like(request, pk):
+    template_name = 'bookstore/book_result.html'
+    book = Book.objects.get(pk=pk)
+    book.like = True
+    book.save()
+    context = {'object': book}
+    return render(request, template_name, context)
+
+
+@require_http_methods(['POST'])
+def book_unlike(request, pk):
+    template_name = 'bookstore/book_result.html'
+    book = Book.objects.get(pk=pk)
+    book.like = False
+    book.save()
+    context = {'object': book}
+    return render(request, template_name, context)
+```
+
+
