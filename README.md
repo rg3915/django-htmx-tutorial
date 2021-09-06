@@ -69,7 +69,7 @@ python manage.py runserver
 
 ## Passo a passo
 
-https://github.com/rg3915/django-htmx-tutorial/tree/passo-a-passo
+https://github.com/rg3915/django-htmx-tutorial/tree/passo-a-passo#passo-a-passo
 
 ## Exemplos
 
