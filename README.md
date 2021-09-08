@@ -66,6 +66,11 @@ python manage.py runserver
 
 * [Bookstore (modal)](#bookstore)
 
+* [Like e unlike](#like-e-unlike)
+
+* [Criar categoria](#criar-uma-nova-categoria)
+
+* [Trocar de categoria](#trocar-a-categoria)
 
 
 ## Passo a passo
@@ -1848,4 +1853,404 @@ def book_unlike(request, pk):
     return render(request, template_name, context)
 ```
 
+
+## Criar uma nova categoria
+
+Vamos editar:
+
+* settings.py
+* urls.py
+* apps.py
+* models.py
+* admin.py
+* urls.py
+* views.py
+* nav.html
+* product_list.html
+* product_table.html
+* product_result.html
+* includes/add_modal.html
+* includes/category_modal_form.html
+
+
+Edite `settings.py`
+
+```python
+'backend.product',
+```
+
+
+Edite `urls.py`
+
+```python
+path('product/', include('backend.product.urls', namespace='product')),
+```
+
+
+Edite `apps.py`
+
+```python
+name = 'backend.product'
+```
+
+
+Edite `models.py`
+
+```python
+from django.db import models
+
+
+class Category(models.Model):
+    title = models.CharField('título', max_length=100, unique=True)
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'categoria'
+        verbose_name_plural = 'categorias'
+
+    def __str__(self):
+        return self.title
+
+
+class Product(models.Model):
+    title = models.CharField('título', max_length=100, unique=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        verbose_name='categoria',
+        related_name='products',
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'produto'
+        verbose_name_plural = 'produtos'
+
+    def __str__(self):
+        return self.title
+
+```
+
+
+Edite `admin.py`
+
+```python
+from django.contrib import admin
+
+from .models import Category, Product
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('__str__',)
+    search_fields = ('title',)
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'category')
+    search_fields = ('title', 'category__title')
+
+```
+
+
+Edite `urls.py`
+
+```python
+from django.urls import path
+
+from backend.product import views as v
+
+app_name = 'product'
+
+
+urlpatterns = [
+    path('', v.product_list, name='product_list'),
+    path('category/<int:pk>/create/', v.category_create, name='category_create'),
+]
+
+```
+
+
+Edite `views.py`
+
+```python
+from django.shortcuts import render
+
+from .models import Category, Product
+
+
+def product_list(request):
+    template_name = 'product/product_list.html'
+    object_list = Product.objects.all()
+    categories = Category.objects.all()
+
+    context = {
+        'object_list': object_list,
+        'categories': categories,
+    }
+    return render(request, template_name, context)
+
+
+def category_create(request, pk):
+    template_name = 'product/includes/category_modal_form.html'
+    product = Product.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        title = request.POST.get('categoria')
+        # Cria a nova categoria
+        category = Category.objects.create(title=title)
+
+        # Associa a nova categoria ao produto atual.
+        product.category = category
+        product.save()
+
+        template_name = 'product/product_result.html'
+
+        categories = Category.objects.all()
+        context = {
+            'object': product,
+            'categories': categories,
+        }
+        return render(request, template_name, context)
+
+    context = {'object': product}
+    return render(request, template_name, context)
+
+```
+
+
+Edite `nav.html`
+
+```html
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'product:product_list' %}">Produtos</a>
+</li>
+
+```
+
+
+Edite `product_list.html`
+
+```html
+<!-- product_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <div class="row">
+    <div class="col-auto">
+      <h1>Lista de Produtos</h1>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Categoria</th>
+      </tr>
+    </thead>
+    <tbody id="productTbody">
+      {% include "./product_table.html" %}
+    </tbody>
+  </table>
+</div>
+
+{% include "./includes/add_modal.html" %}
+
+{% endblock content %}
+
+```
+
+
+Edite `product_table.html`
+
+```html
+<!-- product_table.html -->
+{% for object in object_list %}
+  {% include "./product_result.html" %}
+{% endfor %}
+
+```
+
+
+Edite `product_result.html`
+
+```html
+<!-- product_result.html -->
+<tr id="trProduct{{ object.pk }}">
+  <td>{{ object.title }}</td>
+  <td>
+    <div class="row">
+      <div class="col">
+        <select
+          id="id_category"
+          name="category"
+          class="form-control"
+        >
+          <option value="">-----</option>
+          {% for category in categories %}
+            <option
+              value="{{category.id}}"
+              {% if object.category == category %}selected{% endif %}
+            >{{ category.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <span
+          data-toggle="modal"
+          data-target="#addModal"
+          hx-get="{% url 'product:category_create' object.pk %}"
+          hx-target="#addContent"
+          hx-swap="innerHTML"
+        >
+          <i class="fa fa-plus-circle fa-2x ok"></i>
+        </span>
+      </div>
+    </div>
+  </td>
+</tr>
+```
+
+
+Edite `includes/add_modal.html`
+
+```html
+<!-- addModal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+  <div class="modal-dialog" role="document">
+    <div id="addContent" class="modal-content">
+      <!-- O novo conteúdo será adicionado aqui. -->
+    </div>
+  </div>
+</div>
+
+```
+
+
+Edite `includes/category_modal_form.html`
+
+```html
+<!-- category_modal_form.html -->
+<div class="modal-header">
+  <h4 id="detailModalLabel" class="modal-title">Adicionar Categoria para {{ object.title }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span></button>
+</div>
+<form
+  hx-post="{% url 'product:category_create' object.pk %}"
+  hx-target="#trProduct{{ object.pk }}"
+  hx-swap="outerHTML"
+>
+  {% csrf_token %}
+  <div class="modal-body">
+    <label>Categoria</label>
+    <input id="id_categoria" name="categoria" class="form-control" type="text" />
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function() {
+    $('#addModal').modal('toggle')
+  });
+</script>
+
+```
+
+
+`./manage.py shell_plus`
+
+
+```python
+Category.objects.create(title='bebida')
+Category.objects.create(title='lanche')
+
+produtos = [
+    ('Água mineral', 'bebida'),
+    ('Refrigerante 350ml', 'bebida'),
+    ('Batata frita', 'bebida'),
+    ('Casquinha', ''),
+]
+
+for produto in produtos:
+    categoria_titulo = produto[1]
+    category = Category.objects.filter(title=categoria_titulo).first()
+    if category:
+        Product.objects.create(title=produto[0], category=category)
+    else:
+        Product.objects.create(title=produto[0])
+
+```
+
+## Trocar a categoria
+
+Vamos editar:
+
+* product_result.html
+* product_list.html
+* urls.py
+* views.py
+
+
+Edite `product_result.html`
+
+```html
+hx-post="{% url 'product:category_update' object.pk %}"
+hx-swap="none"
+```
+
+
+Edite `product_list.html`
+
+```html
+
+{% block js %}
+<script>
+  // Por causa do editar categoria.
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  });
+</script>
+{% endblock js %}
+
+```
+
+
+Edite `urls.py`
+
+```python
+path('<int:product_pk>/category/update/', v.category_update, name='category_update'),  # noqa E501
+```
+
+
+Edite `views.py`
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
+
+from .models import Category, Product
+
+...
+
+@require_http_methods(['POST'])
+def category_update(request, product_pk):
+    product = Product.objects.get(pk=product_pk)
+
+    category_pk = request.POST.get('category')
+    category = Category.objects.get(pk=category_pk)
+
+    product.category = category
+    product.save()
+    return HttpResponse('ok')
+
+```
 
