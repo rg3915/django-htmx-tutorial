@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'backend.bookstore',
     'backend.expense',
     'backend.state',
+    'backend.product',
 ]
 
 MIDDLEWARE = [
