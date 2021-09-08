@@ -24,3 +24,12 @@
 {% include "./includes/add_modal.html" %}
 
 {% endblock content %}
+
+{% block js %}
+<script>
+  // Por causa do editar categoria.
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  });
+</script>
+{% endblock js %}

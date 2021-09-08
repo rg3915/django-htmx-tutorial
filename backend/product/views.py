@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 
 from .models import Category, Product
 
@@ -39,3 +41,15 @@ def category_create(request, pk):
 
     context = {'object': product}
     return render(request, template_name, context)
+
+
+@require_http_methods(['POST'])
+def category_update(request, product_pk):
+    product = Product.objects.get(pk=product_pk)
+
+    category_pk = request.POST.get('category')
+    category = Category.objects.get(pk=category_pk)
+
+    product.category = category
+    product.save()
+    return HttpResponse('ok')

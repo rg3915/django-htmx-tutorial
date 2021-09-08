@@ -8,6 +8,8 @@
           id="id_category"
           name="category"
           class="form-control"
+          hx-post="{% url 'product:category_update' object.pk %}"
+          hx-swap="none"
         >
           <option value="">-----</option>
           {% for category in categories %}
