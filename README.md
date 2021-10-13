@@ -148,7 +148,7 @@ Vamos editar:
 * views.py
 * urls.py
 * state_list.html
-* state_result_hx.html
+* hx/state_hx.html
 
 
 Em `state/views.py` escreva
