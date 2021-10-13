@@ -93,8 +93,6 @@ python contrib/env_gen.py
 
 python manage.py migrate
 python manage.py createsuperuser --username="admin" --email=""
-
-python manage.py runserver
 ```
 
 Vamos editar:
@@ -108,8 +106,8 @@ Em `base.html` escreva
 
 ```html
 <!-- HTMX -->
-<script src="https://unpkg.com/htmx.org@1.5.0"></script>
-<script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+<script src="https://unpkg.com/htmx.org@1.6.0"></script>
+<script src="https://unpkg.com/htmx.org@1.6.0/dist/ext/client-side-templates.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
 ```
 
@@ -1070,8 +1068,8 @@ Mude o endpoint para `http://localhost:3000/expenses`
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <!-- HTMX -->
-  <script src="https://unpkg.com/htmx.org@1.5.0"></script>
-  <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+  <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+  <script src="https://unpkg.com/htmx.org@1.6.0/dist/ext/client-side-templates.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
 
   <style>
