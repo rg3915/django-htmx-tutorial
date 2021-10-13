@@ -148,7 +148,7 @@ Vamos editar:
 * views.py
 * urls.py
 * state_list.html
-* state_result.html
+* state_result_hx.html
 
 
 Em `state/views.py` escreva
@@ -196,7 +196,7 @@ urlpatterns = [
 Crie as pastas
 
 ```
-mkdir -p state/templates/state
+mkdir -p state/templates/state/hx
 ```
 
 
@@ -262,7 +262,7 @@ def get_states(region):
     return [state for state in states.get(region).items()]
 
 def state_result(request):
-    template_name = 'state/state_result.html'
+    template_name = 'state/hx/state_hx.html'
     region = request.GET.get('region')
 
     ufs = {
@@ -279,10 +279,10 @@ def state_result(request):
 
 Escreva o template
 
-`touch state/templates/state/state_result.html`
+`touch state/templates/state/hx/state_hx.html`
 
 ```html
-<!-- state/templates/state/state_result.html -->
+<!-- state/templates/state/hx/state_hx.html -->
 {% for uf in ufs %}
   <tr>
     <td>{{ uf.1 }}</td>
@@ -307,7 +307,7 @@ Vamos editar:
 
 * urls.py
 * views.py
-* uf_list.html
+* hx/uf_hx.html
 * state_list.html
 
 
@@ -325,7 +325,7 @@ Edite `state/views.py`
 ```python
 # state/views.py
 def uf_list(request):
-    template_name = 'state/uf_list.html'
+    template_name = 'state/hx/uf_hx.html'
     region = request.GET.get('region')
 
     ufs = {
@@ -342,10 +342,10 @@ def uf_list(request):
 
 Edite
 
-`touch state/templates/state/uf_list.html`
+`touch state/templates/state/hx/uf_hx.html`
 
 ```html
-<!-- state/uf_list.html -->
+<!-- state/templates/state/hx/uf_hx.html -->
 {% for uf in ufs %}
   <option value="{{ uf.0 }}">{{ uf.1 }}</option>
 {% endfor %}
@@ -399,11 +399,11 @@ Considere o desenho a seguir:
 
 ![expense_base.png](img/expense_base.png)
 
-`expense_result.html` será inserido em
+`expense_hx.html` será inserido em
 `expense_table.hmtl`, que por sua vez
 será inserido em `expense_list.html`.
 
-Sendo que `expense_result.html` será repetido várias vezes por causa do laço de repetição em `expense_table.hmtl`.
+Sendo que `expense_hx.html` será repetido várias vezes por causa do laço de repetição em `expense_table.hmtl`.
 
 ---
 
@@ -420,7 +420,7 @@ Vamos editar:
 * urls.py
 * expense_list.html
 * expense_table.html
-* expense_result.html
+* hx/expense_hx.html
 * nav.html
 * index.html
 
@@ -522,7 +522,7 @@ def expense_create(request):
         expense = form.save()
 
     context = {'object': expense}
-    return render(request, 'expense/expense_result.html', context)
+    return render(request, 'expense/hx/expense_hx.html', context)
 ```
 
 Escreva o `expense/urls.py`
@@ -629,16 +629,16 @@ Escreva
 ```html
 <!-- expense_table.html -->
 {% for object in object_list %}
-  {% include "./expense_result.html" %}
+  {% include "./hx/expense_hx.html" %}
 {% endfor %}
 ```
 
 Escreva
 
-`touch expense/templates/expense/expense_result.html`
+`touch expense/templates/expense/hx/expense_hx.html`
 
 ```html
-<!-- expense_result.html -->
+<!-- hx/expense_hx.html -->
 <tr
   hx-target="this"
   hx-swap="outerHTML"
@@ -768,8 +768,8 @@ Vamos editar:
 
 * views.py
 * urls.py
-* expense_result.html
-* expense_detail.html
+* hx/expense_hx.html
+* hx/expense_detail.html
 
 
 Escreva o `expense/views.py`
@@ -777,7 +777,7 @@ Escreva o `expense/views.py`
 ```python
 # expense/views.py
 def expense_detail(request, pk):
-    template_name = 'expense/expense_detail.html'
+    template_name = 'expense/hx/expense_detail.html'
     obj = Expense.objects.get(pk=pk)
     form = ExpenseForm(request.POST or None, instance=obj)
 
@@ -786,7 +786,7 @@ def expense_detail(request, pk):
 
 
 def expense_update(request, pk):
-    template_name = 'expense/expense_result.html'
+    template_name = 'expense/hx/expense_hx.html'
     obj = Expense.objects.get(pk=pk)
     form = ExpenseForm(request.POST or None, instance=obj)
     context = {'object': obj}
@@ -807,10 +807,10 @@ path('<int:pk>/', v.expense_detail, name='expense_detail'),
 path('<int:pk>/update/', v.expense_update, name='expense_update'),
 ```
 
-Escreva o `expense/expense_result.html`
+Escreva o `expense/hx/expense_hx.html`
 
 ```html
-<!-- expense/expense_result.html -->
+<!-- expense/hx/expense_hx.html -->
 <td class="text-center">
     <span hx-get="{% url 'expense:expense_detail' object.pk %}">
       <i class="fa fa-pencil-square-o link span-is-link"></i>
@@ -821,7 +821,7 @@ Escreva o `expense/expense_result.html`
 
 Escreva
 
-`touch expense/templates/expense/expense_detail.html`
+`touch expense/templates/expense/hx/expense_detail.html`
 
 ```html
 <!-- expense_detail.html -->
@@ -862,7 +862,7 @@ Vamos editar:
 
 * views.py
 * urls.py
-* expense_result.html
+* hx/expense_hx.html
 
 
 Escreva o `expense/views.py`
@@ -883,10 +883,10 @@ Escreva o `expense/urls.py`
 path('<int:pk>/delete/', v.expense_delete, name='expense_delete'),
 ```
 
-Escreva o `expense/expense_result.html`
+Escreva o `expense/hx/expense_hx.html`
 
 ```html
-<!-- expense/expense_result.html -->
+<!-- expense/hx/expense_hx.html -->
 <td class="text-center">
     ...
     <span
@@ -1154,7 +1154,7 @@ Vamos editar:
 * bookstore/urls.py
 * bookstore/templates/bookstore/book_list.html
 * bookstore/templates/bookstore/book_table.html
-* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/hx/book_result_hx.html
 
 
 Edite `nav.html`
@@ -1314,14 +1314,14 @@ EOF
 cat << EOF > backend/bookstore/templates/bookstore/book_table.html
 <!-- book_table.html -->
 {% for object in object_list %}
-  {% include "./book_result.html" %}
+  {% include "./hx/book_result_hx.html" %}
 {% endfor %}
 EOF
 ```
 
 ```html
-cat << EOF > backend/bookstore/templates/bookstore/book_result.html
-<!-- book_result.html -->
+cat << EOF > backend/bookstore/templates/bookstore/hx/book_result_hx.html
+<!-- hx/book_result_hx.html -->
 <tr id="trBook{{ object.pk }}">
   <td>
     <a href="">{{ object.title }}</a>
@@ -1359,7 +1359,7 @@ def book_create(request):
     if request.method == 'POST':
         if form.is_valid():
             book = form.save()
-            template_name = 'bookstore/book_result.html'
+            template_name = 'bookstore/hx/book_result_hx.html'
             context = {'object': book}
             return render(request, template_name, context)
 
@@ -1455,7 +1455,7 @@ Vamos editar:
 * bookstore/urls.py
 * bookstore/templates/bookstore/book_detail.html
 * bookstore/templates/bookstore/includes/detail_modal.html
-* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/hx/book_result_hx.html
 * bookstore/templates/bookstore/book_list.html
 
 
@@ -1524,10 +1524,10 @@ EOF
 
 
 
-Edite `backend/bookstore/templates/bookstore/book_result.html`
+Edite `backend/bookstore/templates/bookstore/hx/book_result_hx.html`
 
 ```html
-<!-- book_result.html -->
+<!-- book_result_hx.html -->
 <tr id="trBook{{ object.pk }}">
   <td>
     <a
@@ -1562,7 +1562,7 @@ Vamos editar:
 * bookstore/urls.py
 * bookstore/templates/bookstore/book_list.html
 * bookstore/templates/bookstore/includes/update_modal.html
-* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/hx/book_result_hx.html
 * bookstore/templates/bookstore/book_update_form.html
 
 
@@ -1578,7 +1578,7 @@ def book_update(request, pk):
     if request.method == 'POST':
         if form.is_valid():
             book = form.save()
-            template_name = 'bookstore/book_result.html'
+            template_name = 'bookstore/hx/book_result_hx.html'
             context = {'object': book}
             return render(request, template_name, context)
 
@@ -1626,7 +1626,7 @@ cat << EOF > backend/bookstore/templates/bookstore/includes/update_modal.html
 EOF
 ```
 
-Editar `backend/bookstore/templates/bookstore/book_result.html`
+Editar `backend/bookstore/templates/bookstore/hx/book_result_hx.html`
 
 ```html
 <span
@@ -1686,7 +1686,7 @@ Vamos editar:
 * bookstore/views.py
 * bookstore/urls.py
 * bookstore/templates/bookstore/book_list.html
-* bookstore/templates/bookstore/book_result.html
+* bookstore/templates/bookstore/hx/book_result_hx.html
 
 
 
@@ -1728,7 +1728,7 @@ document.body.addEventListener('htmx:configRequest', (event) => {
 ```
 
 
-Editar `backend/bookstore/templates/bookstore/book_result.html`
+Editar `backend/bookstore/templates/bookstore/hx/book_result_hx.html`
 
 Ao lado icone de editar.
 
@@ -1753,7 +1753,7 @@ Vamos editar:
 * bookstore/admin.py
 * bookstore/forms.py
 * bookstore/book_list.html
-* bookstore/book_result.html
+* bookstore/hx/book_result_hx.html
 * bookstore/urls.py
 * bookstore/views.py
 
@@ -1790,7 +1790,7 @@ Edite `book_list.html`
 ```
 
 
-Edite `book_result.html`
+Edite `hx/book_result_hx.html`
 
 ```html
 <td>
@@ -1835,7 +1835,7 @@ Edite `views.py`
 ```python
 @require_http_methods(['POST'])
 def book_like(request, pk):
-    template_name = 'bookstore/book_result.html'
+    template_name = 'bookstore/hx/book_result_hx.html'
     book = Book.objects.get(pk=pk)
     book.like = True
     book.save()
@@ -1845,7 +1845,7 @@ def book_like(request, pk):
 
 @require_http_methods(['POST'])
 def book_unlike(request, pk):
-    template_name = 'bookstore/book_result.html'
+    template_name = 'bookstore/hx/book_result_hx.html'
     book = Book.objects.get(pk=pk)
     book.like = False
     book.save()
@@ -1868,9 +1868,9 @@ Vamos editar:
 * nav.html
 * product_list.html
 * product_table.html
-* product_result.html
 * includes/add_modal.html
-* includes/category_modal_form.html
+* hx/product_result_hx.html
+* hx/category_modal_form_hx.html
 
 
 Edite `settings.py`
@@ -1995,7 +1995,7 @@ def product_list(request):
 
 
 def category_create(request, pk):
-    template_name = 'product/includes/category_modal_form.html'
+    template_name = 'product/hx/category_modal_form_hx.html'
     product = Product.objects.get(pk=pk)
 
     if request.method == 'POST':
@@ -2007,7 +2007,7 @@ def category_create(request, pk):
         product.category = category
         product.save()
 
-        template_name = 'product/product_result.html'
+        template_name = 'product/hx/product_result_hx.html'
 
         categories = Category.objects.all()
         context = {
@@ -2070,16 +2070,16 @@ Edite `product_table.html`
 ```html
 <!-- product_table.html -->
 {% for object in object_list %}
-  {% include "./product_result.html" %}
+  {% include "./hx/product_result_hx.html" %}
 {% endfor %}
 
 ```
 
 
-Edite `product_result.html`
+Edite `hx/product_result_hx.html`
 
 ```html
-<!-- product_result.html -->
+<!-- hx/product_result_hx.html -->
 <tr id="trProduct{{ object.pk }}">
   <td>{{ object.title }}</td>
   <td>
@@ -2131,10 +2131,10 @@ Edite `includes/add_modal.html`
 ```
 
 
-Edite `includes/category_modal_form.html`
+Edite `hx/category_modal_form_hx.html`
 
 ```html
-<!-- category_modal_form.html -->
+<!-- category_modal_form_hx.html -->
 <div class="modal-header">
   <h4 id="detailModalLabel" class="modal-title">Adicionar Categoria para {{ object.title }}</h4>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -2193,13 +2193,13 @@ for produto in produtos:
 
 Vamos editar:
 
-* product_result.html
+* hx/product_result_hx.html
 * product_list.html
 * urls.py
 * views.py
 
 
-Edite `product_result.html`
+Edite `hx/product_result_hx.html`
 
 ```html
 hx-post="{% url 'product:category_update' object.pk %}"
