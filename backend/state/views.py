@@ -23,7 +23,7 @@ def get_states(region):
 
 
 def uf_list(request):
-    template_name = 'state/uf_list.html'
+    template_name = 'state/hx/uf_hx.html'
     region = request.GET.get('region')
 
     ufs = {
@@ -39,7 +39,7 @@ def uf_list(request):
 
 
 def state_result(request):
-    template_name = 'state/state_result.html'
+    template_name = 'state/hx/state_hx.html'
     region = request.GET.get('region')
 
     ufs = {

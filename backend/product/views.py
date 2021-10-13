@@ -18,7 +18,7 @@ def product_list(request):
 
 
 def category_create(request, pk):
-    template_name = 'product/includes/category_modal_form.html'
+    template_name = 'product/hx/category_modal_form_hx.html'
     product = Product.objects.get(pk=pk)
 
     if request.method == 'POST':
@@ -30,7 +30,7 @@ def category_create(request, pk):
         product.category = category
         product.save()
 
-        template_name = 'product/product_result.html'
+        template_name = 'product/hx/product_result_hx.html'
 
         categories = Category.objects.all()
         context = {

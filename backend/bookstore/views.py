@@ -12,20 +12,20 @@ class BookListView(ListView):
 
 
 def book_detail(request, pk):
-    template_name = 'bookstore/book_detail.html'
+    template_name = 'bookstore/hx/book_detail_hx.html'
     obj = Book.objects.get(pk=pk)
     context = {'object': obj}
     return render(request, template_name, context)
 
 
 def book_create(request):
-    template_name = 'bookstore/book_form.html'
+    template_name = 'bookstore/hx/book_form_hx.html'
     form = BookForm(request.POST or None)
 
     if request.method == 'POST':
         if form.is_valid():
             book = form.save()
-            template_name = 'bookstore/book_result.html'
+            template_name = 'bookstore/hx/book_result_hx.html'
             context = {'object': book}
             return render(request, template_name, context)
 
@@ -34,14 +34,14 @@ def book_create(request):
 
 
 def book_update(request, pk):
-    template_name = 'bookstore/book_update_form.html'
+    template_name = 'bookstore/hx/book_update_form_hx.html'
     instance = Book.objects.get(pk=pk)
     form = BookForm(request.POST or None, instance=instance)
 
     if request.method == 'POST':
         if form.is_valid():
             book = form.save()
-            template_name = 'bookstore/book_result.html'
+            template_name = 'bookstore/hx/book_result_hx.html'
             context = {'object': book}
             return render(request, template_name, context)
 
@@ -59,7 +59,7 @@ def book_delete(request, pk):
 
 @require_http_methods(['POST'])
 def book_like(request, pk):
-    template_name = 'bookstore/book_result.html'
+    template_name = 'bookstore/hx/book_result_hx.html'
     book = Book.objects.get(pk=pk)
     book.like = True
     book.save()
@@ -69,7 +69,7 @@ def book_like(request, pk):
 
 @require_http_methods(['POST'])
 def book_unlike(request, pk):
-    template_name = 'bookstore/book_result.html'
+    template_name = 'bookstore/hx/book_result_hx.html'
     book = Book.objects.get(pk=pk)
     book.like = False
     book.save()

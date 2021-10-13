@@ -24,7 +24,7 @@ def expense_create(request):
         expense = form.save()
 
     context = {'object': expense}
-    return render(request, 'expense/expense_result.html', context)
+    return render(request, 'expense/hx/expense_hx.html', context)
 
 
 @require_http_methods(['DELETE'])
@@ -67,7 +67,7 @@ def expense_detail(request, pk):
     form = ExpenseForm(request.POST or None, instance=obj)
 
     context = {'object': obj, 'form': form}
-    return render(request, 'expense/expense_detail.html', context)
+    return render(request, 'expense/hx/expense_detail_hx.html', context)
 
 
 def expense_update(request, pk):
@@ -79,7 +79,7 @@ def expense_update(request, pk):
         if form.is_valid():
             form.save()
 
-    return render(request, 'expense/expense_result.html', context)
+    return render(request, 'expense/hx/expense_hx.html', context)
 
 
 def expense_json(self):
