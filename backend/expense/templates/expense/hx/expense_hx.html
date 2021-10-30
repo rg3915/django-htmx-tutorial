@@ -1,0 +1,26 @@
+<!-- hx/expense_hx.html -->
+<tr>
+  <td>
+    <input
+      type="checkbox"
+      name="ids"
+      value="{{ object.pk }}"
+    >
+  </td>
+  <td>{{ object.description }}</td>
+  <td>{{ object.value }}</td>
+  <td class="text-center">
+    {% if object.paid %}
+    <span>
+      <i class="fa fa-check-circle ok"></i>
+    </span>
+    {% else %}
+    <span>
+      <i class="fa fa-times-circle no"></i>
+    </span>
+    {% endif %}
+  </td>
+  <td>
+    <!-- Ações -->
+  </td>
+</tr>

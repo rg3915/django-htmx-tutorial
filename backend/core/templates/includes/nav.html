@@ -12,10 +12,10 @@
         <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{ url 'state:state_list' %}">Estados</a>
+        <a class="nav-link" href="{% url 'state:state_list' %}">Estados</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{ url 'expense:expense_list' %}">Despesas</a>
+        <a class="nav-link" href="{% url 'expense:expense_list' %}">Despesas</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{ url 'expense:expense_client' %}">Despesas (Client side)</a>
