@@ -8,4 +8,3 @@ class ExpenseAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'value', 'paid')
     search_fields = ('description',)
     list_filter = ('paid',)
-

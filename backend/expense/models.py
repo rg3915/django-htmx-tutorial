@@ -15,4 +15,3 @@ class Expense(TimeStampedModel):
 
     def __str__(self):
         return self.description
-
