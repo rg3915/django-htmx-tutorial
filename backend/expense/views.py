@@ -53,3 +53,25 @@ def expense_no_paid(request):
 
     context = {'object_list': expenses}
     return render(request, 'expense/expense_table.html', context)
+
+
+def expense_detail(request, pk):
+    template_name = 'expense/hx/expense_detail.html'
+    obj = Expense.objects.get(pk=pk)
+    form = ExpenseForm(request.POST or None, instance=obj)
+
+    context = {'object': obj, 'form': form}
+    return render(request, template_name, context)
+
+
+def expense_update(request, pk):
+    template_name = 'expense/hx/expense_hx.html'
+    obj = Expense.objects.get(pk=pk)
+    form = ExpenseForm(request.POST or None, instance=obj)
+    context = {'object': obj}
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+
+    return render(request, template_name, context)

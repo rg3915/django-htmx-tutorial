@@ -1,5 +1,8 @@
 <!-- hx/expense_hx.html -->
-<tr>
+<tr
+  hx-target="this"
+  hx-swap="outerHTML"
+>
   <td>
     <input
       type="checkbox"
@@ -20,7 +23,10 @@
     </span>
     {% endif %}
   </td>
-  <td>
+  <td class="text-center">
     <!-- Ações -->
+    <span hx-get="{% url 'expense:expense_detail' object.pk %}">
+      <i class="fa fa-pencil-square-o link span-is-link"></i>
+    </span>
   </td>
 </tr>
