@@ -75,3 +75,9 @@ def expense_update(request, pk):
             form.save()
 
     return render(request, template_name, context)
+
+
+def expense_delete(request, pk):
+    obj = Expense.objects.get(pk=pk)
+    obj.delete()
+    return render(request, 'expense/expense_table.html')

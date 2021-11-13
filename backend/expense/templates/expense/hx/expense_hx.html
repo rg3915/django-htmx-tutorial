@@ -28,5 +28,13 @@
     <span hx-get="{% url 'expense:expense_detail' object.pk %}">
       <i class="fa fa-pencil-square-o link span-is-link"></i>
     </span>
+    <span
+      hx-delete="{% url 'expense:expense_delete' object.pk %}"
+      hx-confirm="Deseja mesmo deletar?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:500ms"
+    >
+      <fa class="fa fa-trash no span-is-link pl-2"></fa>
+    </span>
   </td>
 </tr>
