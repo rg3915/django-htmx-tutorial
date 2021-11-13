@@ -7,24 +7,48 @@
 
 <div class="row">
   <div class="col">
-    <form class="form-inline p-3"
-          hx-post="{% url 'expense:expense_create' %}"
-          hx-target="#expenseTbody"
-          hx-swap="afterbegin"
+    <form
+      class="form-inline p-3"
+      hx-post="{% url 'expense:expense_create' %}"
+      hx-target="#expenseTbody"
+      hx-swap="afterbegin"
     >
       {% csrf_token %}
+
       {% for field in form %}
         {{ field }}
         {{ field.errors }}
+
         {% if field.help_text %}
           <small class="text-muted">{{ field.help_text|safe }}</small>
         {% endif %}
+
       {% endfor %}
+
       <div class="form-group">
-        <button type="submit" class="btn btn-primary ml-2">Adicionar</button>
+        <button
+          type="submit"
+          class="btn btn-primary ml-2"
+        >Adicionar</button>
       </div>
     </form>
   </div>
+</div>
+
+<div
+  class="col"
+  hx-include="#checkedExpenses"
+  hx-target="#expenseTbody"
+>
+  <a
+    class="btn btn-outline-success"
+    hx-post="{% url 'expense:expense_paid' %}"
+  >Pago</a>
+  <a
+    class="btn btn-outline-danger"
+    hx-post="{% url 'expense:expense_no_paid' %}"
+  >Não Pago</a>
+  <span class="lead"><strong>Bulk update</strong></span>
 </div>
 
 <div id="checkedExpenses" class="col pt-2">
@@ -39,7 +63,7 @@
           <th>Valor</th>
           <th class="text-center">Pago</th>
           <th class="text-center">Ações</th>
-        </th>
+          </th>
       </thead>
       <tbody id="expenseTbody">
         {% include "./expense_table.html" %}
@@ -47,6 +71,7 @@
     </table>
   </form>
 </div>
+
 {% endblock content %}
 
 {% block js %}
