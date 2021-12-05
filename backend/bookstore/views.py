@@ -12,7 +12,7 @@ class BookListView(ListView):
 
 
 def book_create(request):
-    template_name = 'bookstore/book_form.html'
+    template_name = 'bookstore/hx/book_form_hx.html'
     form = BookForm(request.POST or None)
 
     if request.method == 'POST':
