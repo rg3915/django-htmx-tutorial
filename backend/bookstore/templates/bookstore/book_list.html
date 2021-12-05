@@ -1,0 +1,27 @@
+<!-- book_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <div class="row">
+    <div class="col-auto">
+      <h1>Lista de Livros</h1>
+    </div>
+    <div class="col-auto">
+      <a href="" class="btn btn-primary">Adicionar</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="bookTbody">
+      {% include "./book_table.html" %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
