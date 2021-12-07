@@ -1,8 +1,59 @@
 <!-- hx/book_result_hx.html -->
 <tr id="trBook{{ object.pk }}">
   <td>
-    <a href="">{{ object.title }}</a>
+    <span
+      hx-post="{% url 'bookstore:book_like' object.pk %}"
+      hx-target="#trBook{{ object.pk }}"
+      hx-swap="outerHTML"
+    >
+      {% if object.like %}
+        <i class="fa fa-thumbs-up text-primary"></i>
+      {% else %}
+        <i class="fa fa-thumbs-o-up text-secondary"></i>
+      {% endif %}
+    </span>
+    <span
+      class="ml-2"
+      hx-post="{% url 'bookstore:book_unlike' object.pk %}"
+      hx-target="#trBook{{ object.pk }}"
+      hx-swap="outerHTML"
+    >
+      {% if not object.like %}
+        <i class="fa fa-thumbs-down text-danger"></i>
+      {% else %}
+        <i class="fa fa-thumbs-o-down text-secondary"></i>
+      {% endif %}
+    </span>
+  </td>
+  <td>
+    <a
+      href=""
+      data-toggle="modal"
+      data-target="#detailModal"
+      hx-get="{{ object.get_absolute_url }}"
+      hx-target="#detailContent"
+      hx-indicator=".htmx-indicator"
+      hx-swap="innerHTML"
+    >{{ object.title }}</a>
   </td>
   <td>{{ object.author|default:'---' }}</td>
-  <td></td>
+  <td>
+    <span
+      data-toggle="modal"
+      data-target="#updateModal"
+      hx-get="{% url 'bookstore:book_update' object.pk %}"
+      hx-target="#updateContent"
+      hx-swap="innerHTML"
+    >
+      <i class="fa fa-edit link span-is-link"></i>
+    </span>
+    <span
+      hx-delete="{% url 'bookstore:book_delete' object.pk %}"
+      hx-confirm="Deseja mesmo deletar?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:500ms"
+    >
+      <i class="fa fa-trash no span-is-link pl-2"></i>
+    </span>
+  </td>
 </tr>

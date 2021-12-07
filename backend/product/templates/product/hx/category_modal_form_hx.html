@@ -1,0 +1,28 @@
+<!-- category_modal_form_hx.html -->
+<div class="modal-header">
+  <h4 id="detailModalLabel" class="modal-title">Adicionar Categoria para {{ object.title }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span></button>
+</div>
+<form
+  hx-post="{% url 'product:category_create' object.pk %}"
+  hx-target="#trProduct{{ object.pk }}"
+  hx-swap="outerHTML"
+>
+  {% csrf_token %}
+  <div class="modal-body">
+    <label>Categoria</label>
+    <input id="id_categoria" name="categoria" class="form-control" type="text" />
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </div>
+</form>
+
+<script>
+  $('form').on('submit', function() {
+    $('#addModal').modal('toggle')
+  });
+</script>
+

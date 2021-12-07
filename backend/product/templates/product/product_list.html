@@ -1,0 +1,26 @@
+<!-- product_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <div class="row">
+    <div class="col-auto">
+      <h1>Lista de Produtos</h1>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Categoria</th>
+      </tr>
+    </thead>
+    <tbody id="productTbody">
+      {% include "./product_table.html" %}
+    </tbody>
+  </table>
+</div>
+
+{% include "./includes/add_modal.html" %}
+
+{% endblock content %}

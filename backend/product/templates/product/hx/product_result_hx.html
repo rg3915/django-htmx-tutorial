@@ -1,0 +1,34 @@
+<!-- hx/product_result_hx.html -->
+<tr id="trProduct{{ object.pk }}">
+  <td>{{ object.title }}</td>
+  <td>
+    <div class="row">
+      <div class="col">
+        <select
+          id="id_category"
+          name="category"
+          class="form-control"
+        >
+          <option value="">-----</option>
+          {% for category in categories %}
+            <option
+              value="{{category.id}}"
+              {% if object.category == category %}selected{% endif %}
+            >{{ category.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <span
+          data-toggle="modal"
+          data-target="#addModal"
+          hx-get="{% url 'product:category_create' object.pk %}"
+          hx-target="#addContent"
+          hx-swap="innerHTML"
+        >
+          <i class="fa fa-plus-circle fa-2x ok"></i>
+        </span>
+      </div>
+    </div>
+  </td>
+</tr>
