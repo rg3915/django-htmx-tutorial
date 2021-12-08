@@ -2239,8 +2239,13 @@ Vamos editar:
 Edite `hx/product_result_hx.html`
 
 ```html
-hx-post="{% url 'product:category_update' object.pk %}"
-hx-swap="none"
+<select
+  id="id_category"
+  name="category"
+  class="form-control"
+  hx-post="{% url 'product:category_update' object.pk %}"
+  hx-swap="none"
+>
 ```
 
 
