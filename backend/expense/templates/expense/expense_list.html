@@ -77,5 +77,11 @@
 document.body.addEventListener('htmx:configRequest', (event) => {
   event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
 });
+htmx.on("htmx:afterSwap", function(evt) {
+  if (evt.target.id == 'expenseTbody') {
+    document.getElementById('id_description').value = ''
+    document.getElementById('id_value').value = ''
+  }
+});
 </script>
 {% endblock js %}
