@@ -1,79 +1,79 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Regiões e Estados do Brasil</h1>
-<h2 style="color: #3465a4;">Filtro com dropdowns dependentes</h2>
+  <h1>Regiões e Estados do Brasil</h1>
+  <h2 style="color: #3465a4;">Filtro com dropdowns dependentes</h2>
 
-<div class="row">
+  <div class="row">
 
-  <div class="col">
-    <label>Região</label>
-    <select
-      name="region"
-      class="form-control"
-      hx-get="{% url 'state:uf_list' %}"
-      hx-target="#uf"
-    >
-      <option value="">-----</option>
-      {% for region in regions %}
-        <option value="{{ region.0 }}">{{ region.1 }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="col">
-    <label>UF</label>
-    <select
-      id="uf"
-      class="form-control"
-    >
-      <option value="">-----</option>
-      <!-- O novo conteúdo será inserido aqui. -->
-    </select>
-  </div>
-
-</div>
-
-<hr>
-
-<h2 style="color: #3465a4;">Filtrando várias tabelas com um clique</h2>
-
-<div class="row">
-
-  <div class="col">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Região</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="col">
+      <label>Região</label>
+      <select
+        name="region"
+        class="form-control"
+        hx-get="{% url 'state:uf_list' %}"
+        hx-target="#uf"
+      >
+        <option value="">-----</option>
         {% for region in regions %}
-        <tr
-          hx-get="{% url 'state:state_result' %}?region={{region.0}}"
-          hx-target="#states"
-        >
-          <td>
-            <a>{{ region.1 }}</a>
-          </td>
-        </tr>
+          <option value="{{ region.0 }}">{{ region.1 }}</option>
         {% endfor %}
-      </tbody>
-    </table>
-  </div>
+      </select>
+    </div>
 
-  <div class="col">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Estados</th>
-        </tr>
-      </thead>
-      <tbody id="states">
+    <div class="col">
+      <label>UF</label>
+      <select
+        id="uf"
+        class="form-control"
+      >
+        <option value="">-----</option>
         <!-- O novo conteúdo será inserido aqui. -->
-      </tbody>
-    </table>
+      </select>
+    </div>
+
   </div>
 
-</div>
+  <hr>
+
+  <h2 style="color: #3465a4;">Filtrando várias tabelas com um clique</h2>
+
+  <div class="row">
+
+    <div class="col">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Região</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for region in regions %}
+            <tr
+              hx-get="{% url 'state:state_result' %}?region={{region.0}}"
+              hx-target="#states"
+            >
+              <td>
+                <a>{{ region.1 }}</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Estados</th>
+          </tr>
+        </thead>
+        <tbody id="states">
+          <!-- O novo conteúdo será inserido aqui. -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 {% endblock content %}

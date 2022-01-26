@@ -2,54 +2,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Lista de Despesas (Client side)</h1>
-<h3>Consumindo API Rest</h3>
+  <h1>Lista de Despesas (Client side)</h1>
+  <h3>Consumindo API Rest</h3>
 
-<div hx-ext="client-side-templates">
-  <button
-    class="btn btn-primary"
-    hx-get="{% url 'expense:expense_json' %}"
-    hx-swap="innerHTML"
-    hx-target="#content"
-    mustache-template="foo"
-  >
-    Clique para carregar os dados
-  </button>
+  <div hx-ext="client-side-templates">
+    <button
+      class="btn btn-primary"
+      hx-get="{% url 'expense:expense_json' %}"
+      hx-swap="innerHTML"
+      hx-target="#content"
+      mustache-template="foo"
+    >
+      Clique para carregar os dados
+    </button>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Descrição</th>
-        <th>Valor</th>
-        <th class="text-center">Pago</th>
-      </tr>
-    </thead>
-    <tbody id="content">
-    </tbody>
-    <template id="foo">
-      <!-- Mustache looping -->
-      { #data }
-      <tr>
-        <td>{ description }</td>
-        <td>{ value }</td>
-        <td class="text-center">
-          <!-- Mustache conditional -->
-          <!-- http://mustache.github.io/mustache.5.html#Inverted-Sections -->
-          { #paid } <i class="fa fa-check-circle ok"></i> { /paid }
-          { ^paid } <i class="fa fa-times-circle no"></i> { /paid }
-        </td>
-      </tr>
-      { /data }
-    </template>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Descrição</th>
+          <th>Valor</th>
+          <th class="text-center">Pago</th>
+        </tr>
+      </thead>
+      <tbody id="content">
+      </tbody>
+      <template id="foo">
+        <!-- Mustache looping -->
+        { #data }
+        <tr>
+          <td>{ description }</td>
+          <td>{ value }</td>
+          <td class="text-center">
+            <!-- Mustache conditional -->
+            <!-- http://mustache.github.io/mustache.5.html#Inverted-Sections -->
+            { #paid } <i class="fa fa-check-circle ok"></i> { /paid }
+            { ^paid } <i class="fa fa-times-circle no"></i> { /paid }
+          </td>
+        </tr>
+        { /data }
+      </template>
 
-  </table>
-</div>
+    </table>
+  </div>
 
 {% endblock content %}
 
 {% block js %}
-<script>
-  // https://github.com/janl/mustache.js/#custom-delimiters
-  Mustache.tags = ['{', '}'];
-</script>
+  <script>
+    // https://github.com/janl/mustache.js/#custom-delimiters
+    Mustache.tags = ['{', '}'];
+  </script>
 {% endblock js %}

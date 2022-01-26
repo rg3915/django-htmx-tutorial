@@ -2,86 +2,86 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Lista de Despesas</h1>
-<div class="row">
-  <div class="col">
-    <form
-      class="form-inline p-3"
-      hx-post="{% url 'expense:expense_create' %}"
-      hx-target="#expenseTbody"
-      hx-indicator=".htmx-indicator"
-      hx-swap="afterbegin"
-    >
-      {% csrf_token %}
-      {% for field in form %}
-      <div class="form-group p-2">
-        {{ field }}
-        {{ field.errors }}
-        {% if field.help_text %}
-        <small class="text-muted">{{ field.help_text|safe }}</small>
-        {% endif %}
-      </div>
-      {% endfor %}
-      <div class="form-group">
-        <button
-          type="submit"
-          class="btn btn-primary ml-2"
-        >Adicionar</button>
-      </div>
+  <h1>Lista de Despesas</h1>
+  <div class="row">
+    <div class="col">
+      <form
+        class="form-inline p-3"
+        hx-post="{% url 'expense:expense_create' %}"
+        hx-target="#expenseTbody"
+        hx-indicator=".htmx-indicator"
+        hx-swap="afterbegin"
+      >
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group p-2">
+            {{ field }}
+            {{ field.errors }}
+            {% if field.help_text %}
+              <small class="text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <div class="form-group">
+          <button
+            type="submit"
+            class="btn btn-primary ml-2"
+          >Adicionar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div
+    class="col"
+    hx-include="#checkedExpenses"
+    hx-target="#expenseTbody"
+  >
+    <a
+      class="btn btn-outline-success"
+      hx-post="{% url 'expense:expense_paid' %}"
+    >Pago</a>
+    <a
+      class="btn btn-outline-danger"
+      hx-post="{% url 'expense:expense_no_paid' %}"
+    >Não Pago</a>
+    <span class="lead"><strong>Bulk update</strong></span>
+  </div>
+
+  <div
+    id="checkedExpenses"
+    class="col pt-2"
+  >
+    <form>  <!-- Este form é importante pra editar os dados -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th class="text-center">Pago</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTbody">
+          {% include "./expense_table.html" %}
+        </tbody>
+      </table>
     </form>
   </div>
-</div>
-
-<div
-  class="col"
-  hx-include="#checkedExpenses"
-  hx-target="#expenseTbody"
->
-  <a
-    class="btn btn-outline-success"
-    hx-post="{% url 'expense:expense_paid' %}"
-  >Pago</a>
-  <a
-    class="btn btn-outline-danger"
-    hx-post="{% url 'expense:expense_no_paid' %}"
-  >Não Pago</a>
-  <span class="lead"><strong>Bulk update</strong></span>
-</div>
-
-<div
-  id="checkedExpenses"
-  class="col pt-2"
->
-  <form>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Descrição</th>
-          <th>Valor</th>
-          <th class="text-center">Pago</th>
-          <th class="text-center">Ações</th>
-        </tr>
-      </thead>
-      <tbody id="expenseTbody">
-        {% include "./expense_table.html" %}
-      </tbody>
-    </table>
-  </form>
-</div>
 
 {% endblock content %}
 
 {% block js %}
-<script>
-document.body.addEventListener('htmx:configRequest', (event) => {
-  event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-});
-htmx.on("htmx:afterSwap", function(evt) {
-  if (evt.target.id == 'expenseTbody') {
-    document.getElementById('id_description').value = ''
-    document.getElementById('id_value').value = ''
-  }
-});
-</script>
+  <script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    });
+    htmx.on("htmx:afterSwap", function(evt) {
+      if (evt.target.id == 'expenseTbody') {
+        document.getElementById('id_description').value = ''
+        document.getElementById('id_value').value = ''
+      }
+    });
+  </script>
 {% endblock js %}
